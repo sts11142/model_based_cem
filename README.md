@@ -1,4 +1,6 @@
-# CEM
+
+
+<!-- # CEM
 > The official implementation for the paper *CEM: Commonsense-aware Empathetic Response Generation*.
 
 <img src="https://img.shields.io/badge/Venue-AAAI--22-278ea5" alt="venue"/> <img src="https://img.shields.io/badge/Status-Accepted-success" alt="status"/> <img src="https://img.shields.io/badge/Issues-Welcome-red"> <img src="https://img.shields.io/badge/Last%20Updated-2022--03--19-2D333B" alt="update"/>
@@ -52,4 +54,4 @@ If you find our work useful for your research, please kindly cite our paper as f
       journal={arXiv preprint arXiv:2109.05739},
       year={2021},
 }
-```
+``` -->
