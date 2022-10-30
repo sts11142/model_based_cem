@@ -18,10 +18,27 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 relations = ["xIntent", "xNeed", "xWant", "xEffect", "xReact"]
 emotion_lexicon = json.load(open("data/NRCDict.json"))[0]
+"""
+emotion_lexicon の中身...配列．[0]が配列で[1]が辞書．lexicon: 辞書
+[
+    ["語1", "語2", ...],
+    {
+        "語1": 0 or 1 or 2,
+        "語2": 0 or 1 or 2,
+        ...
+    }
+]
+"""
 stop_words = stopwords.words("english")
 
 
 class Lang:
+    """
+    quated:
+        load_dataset(),
+    usage:
+        インスタンスに与えられた引数から，語彙とインデックスの辞書を作成
+    """
     def __init__(self, init_index2word):
         self.word2index = {str(v): int(k) for k, v in init_index2word.items()}
         self.word2count = {str(v): 1 for k, v in init_index2word.items()}
@@ -43,6 +60,12 @@ class Lang:
 
 
 def get_wordnet_pos(tag):
+    """
+    quated:
+        encode_ctx()
+    usage:
+        語彙の品詞を判定
+    """
     if tag.startswith("J"):
         return wordnet.ADJ
     elif tag.startswith("V"):
@@ -56,14 +79,35 @@ def get_wordnet_pos(tag):
 
 
 def process_sent(sentence):
-    sentence = sentence.lower()
+    """
+    quated:
+        get_commonsense(), encode_ctx(), encode()
+    usage:
+        ワードペア(src.utils.constants WORD_PAIRS)で文を置換した後，tokenizeする．
+    """
+    sentence = sentence.lower() # str.lower(): 文字列を小文字に変換したものを返す
     for k, v in word_pairs.items():
-        sentence = sentence.replace(k, v)
+        sentence = sentence.replace(k, v)   # str.replace('a', 'b'): 文字列中の'a'を'b'に置換する
     sentence = nltk.word_tokenize(sentence)
     return sentence
 
 
 def get_commonsense(comet, item, data_dict):
+    """
+    quated:
+        encode_ctx()
+    usage:
+        Commetに文を投入し，各relationに対応する生成を得たのち，data_dictに追加する
+        参考: data_dict ... in encode()
+            data_dict = {
+                "context": [],
+                "target": [],
+                "emotion": [],
+                "situation": [],
+                "emotion_context": [],
+                "utt_cs": [],
+            }
+    """
     cs_list = []
     input_event = " ".join(item)
     for rel in relations:
@@ -75,6 +119,20 @@ def get_commonsense(comet, item, data_dict):
 
 
 def encode_ctx(vocab, items, data_dict, comet):
+    """
+    quated:
+        encode()
+    usage:
+        データの中身をトークナイズして，各語の品詞を判定した後，辞書にdata_dictに加える
+        参考: items はデータファイルの中の文章で，1文or複数文が配列になったタプル
+            items = files[i]
+            files = [
+                (['hoge huga']),
+                (['hoge huga', 'hoge huga', 'foo bar']),
+                ...
+            ]
+
+    """
     for ctx in tqdm(items):
         ctx_list = []
         e_list = []
@@ -82,7 +140,11 @@ def encode_ctx(vocab, items, data_dict, comet):
             item = process_sent(c)
             ctx_list.append(item)
             vocab.index_words(item)
-            ws_pos = nltk.pos_tag(item)  # pos
+            ws_pos = nltk.pos_tag(item)  # pos  ←Part of Speech: PoS
+            """
+            品詞タグを取得．配列の中のタプル
+                ws_pos ... [('Hi', 'NNP'), (',', ','), ('I', 'PRP), ...]
+            """
             for w in ws_pos:
                 w_p = get_wordnet_pos(w[1])
                 if w[0] not in stop_words and (
@@ -97,6 +159,12 @@ def encode_ctx(vocab, items, data_dict, comet):
 
 
 def encode(vocab, files):
+    """
+    quated:
+        read_file()
+    usage:
+        data_dict 辞書の中身を満たしていく
+    """
     from src.utils.comet import Comet
 
     data_dict = {
@@ -135,6 +203,12 @@ def encode(vocab, files):
 
 
 def read_files(vocab):
+    """
+    quated:
+        load_dataset()
+    usage:
+        ファイルの中身を元にencode()で作成した辞書を返す．train, dev, testの3つ分．
+    """
     files = DATA_FILES(config.data_dir)
     train_files = [np.load(f, allow_pickle=True) for f in files["train"]]
     dev_files = [np.load(f, allow_pickle=True) for f in files["dev"]]
@@ -148,6 +222,13 @@ def read_files(vocab):
 
 
 def load_dataset():
+    """
+    quated:
+        prepare_data_seq()
+    usage:
+        キャッシュファイルがあればそれを読み込む．なければ新規で読み込んでキャッシュを作成する．
+        読み込んだファイルの中身を返す(4つの値)
+    """
     data_dir = config.data_dir
     cache_file = f"{data_dir}/dataset_preproc.p"
     if os.path.exists(cache_file):
@@ -184,6 +265,12 @@ def load_dataset():
 
 class Dataset(data.Dataset):
     """Custom data.Dataset compatible with data.DataLoader."""
+    """
+    Pytorchではデータの組([入力データ, ラベル])を返すDatasetを
+    torch.utils.data.DataLoader()に渡す必要がある
+    そのためのもの．
+    自前のデータを使用する場合，__len__()と__getitem__()を定義する必要がある．
+    """
 
     def __init__(self, data, vocab):
         """Reads source and target sequences from txt files."""
@@ -353,6 +440,13 @@ def collate_fn(data):
 
 
 def prepare_data_seq(batch_size=32):
+    """
+    quated:
+        main.py
+    usage:
+        バッチサイズに固めた3つのデータ(tra, valid, test)とvocabとlen
+        の5つを返す
+    """
 
     pairs_tra, pairs_val, pairs_tst, vocab = load_dataset()
 
@@ -365,6 +459,9 @@ def prepare_data_seq(batch_size=32):
         shuffle=True,
         collate_fn=collate_fn,
     )
+    # torch.utils.data.DataLoader(datase=, ...)
+    #    PytorchのDataLoaderにDatasetインスタンス([入力, ラベル]の組を1つ返すもの)
+    #    を渡して，データをバッチサイズに固めて戻す
 
     dataset_valid = Dataset(pairs_val, vocab)
     data_loader_val = torch.utils.data.DataLoader(

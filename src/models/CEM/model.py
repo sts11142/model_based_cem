@@ -529,11 +529,11 @@ class CEM(nn.Module):
             _,
             _,
             _,
-        ) = get_input_from_batch(batch)
-        dec_batch, _, _, _, _ = get_output_from_batch(batch)
+        ) = get_input_from_batch(batch)     # src/models/common
+        dec_batch, _, _, _, _ = get_output_from_batch(batch)    # src/models/common
 
         if config.noam:
-            self.optimizer.optimizer.zero_grad()
+            self.optimizer.optimizer.zero_grad()    # 勾配の初期化．Pytorchではこれをしないと前の計算結果から始まるらしい．
         else:
             self.optimizer.zero_grad()
 

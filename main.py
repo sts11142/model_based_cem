@@ -15,6 +15,13 @@ from src.models.common import evaluate, count_parameters, make_infinite
 
 
 def make_model(vocab, dec_num):
+    """
+    quated:
+        main()
+    usage:
+        config.model(src.ultis)の値に応じてモデルを生成する．
+        vocab, dec_numをモデルに渡す
+    """
     is_eval = config.test
     if config.model == "trs":
         model = Transformer(
@@ -73,6 +80,10 @@ def make_model(vocab, dec_num):
 
 
 def train(model, train_set, dev_set):
+    """
+    1000000回，イテレートしてbest_pplを計算，best値の更新のたびにsave_model()する
+    train_one_batch()を必要回数分起動させる
+    """
     check_iter = 2000
     try:
         model.train()
@@ -80,11 +91,11 @@ def train(model, train_set, dev_set):
         patient = 0
         writer = SummaryWriter(log_dir=config.save_path)
         weights_best = deepcopy(model.state_dict())
-        data_iter = make_infinite(train_set)
+        data_iter = make_infinite(train_set)    # make_infinite(): 引数(dataloader)をyieldでイテレーターに変換する関数
         for n_iter in tqdm(range(1000000)):
             if "cem" in config.model:
                 loss, ppl, bce, acc, _, _ = model.train_one_batch(
-                    next(data_iter), n_iter
+                    next(data_iter), n_iter     # dataごとにtrain_one_batch()を動作させる
                 )
             else:
                 loss, ppl, bce, acc = model.train_one_batch(next(data_iter), n_iter)
