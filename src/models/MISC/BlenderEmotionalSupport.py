@@ -237,6 +237,7 @@ def _get_comet_input(comet_row, tokenizer, max_num_attr=30, max_len_attr=10):
 
 def _make_feature(id_, sents, rls, ts, eos, pad=False, block_size=512, strategy_labels=None, evaluate=False, str_embd=False, generation=False):
     # we did't use role label and turn number in modeling as they did't carry significant improvement. However, codes still remain here.
+    # sent: inputs("EOS"で区切った複数の入力文)
     if len(sents) == 0:
         return InputFeatures_train([], [], [], [], [],
                             [], [] , [], [])
@@ -326,12 +327,23 @@ def _make_feature(id_, sents, rls, ts, eos, pad=False, block_size=512, strategy_
     return feature
 
 def _norm_text(text):
+    """
+    strip()は，文字列の頭と最後の空白文字を削除する．文字間の空白は削除しない．
+    その後splitで分ける．
+    * はjsのスプレッド構文みたいなもの．unpacking
+    例えばtrainWithStrategy.tsv の1行目
+        3 0 0 Hi there, can you ...
+            emo(tion): 3
+            r(ole): 0,
+            t(urn): 0,
+            *toks: ["Hi", "there", ",", "can", "you", ...]
+    """
     emo, r, t, *toks = text.strip().split()
     try:
         emo = int(emo)
         r = int(r)
         t = int(t)
-        toks = ' '.join(toks[:len(toks)])
+        toks = ' '.join(toks[:len(toks)])   # 文頭に空白を入れる？
     except Exception as e:
         raise e
     return emo, r, t, toks
@@ -342,7 +354,7 @@ def _get_inputs_from_text(text, tokenizer, strategy=True, cls = False):
     roles = []
     turns = []
     strategy_labels=[]
-    srcs = srcs.split(" EOS")
+    srcs = srcs.split(" EOS")   # "EOS"で区切る
     emotion = None
     for idx, src in enumerate(srcs):
 
@@ -352,18 +364,24 @@ def _get_inputs_from_text(text, tokenizer, strategy=True, cls = False):
         if emotion is None:
             emotion = src_emo
 
-        context_id = tokenizer.encode(src)
+        context_id = tokenizer.encode(src)  # src: ex) [" ", "Hi", "there", ",", "can", ...]
 
-        if not strategy:
+        # ここは基本的にはpassになりそう
+        if not strategy:    # strategy は基本有りな感じ
             context_id = [i  for i in context_id if i< 50257+4687]
-        elif cls:
+        elif cls:   # clsは基本無い感じ
             context_id = tokenizer.cls + [i for i in context_id if i< 50257+4687]
+            # [2, 2342, 2193, ...]   ← トークンごとにidを割り振り．先頭の2はclsトークンのつもり
         else:
             pass
 
+        # 会話は src_role==1 の発話で終了する．つまりsrc_role==1 → 相手発話？
+        #   src_role==1: 相手．strategy_labels は label のencode値
+        #   src_role==0: 自分．strategy_labels は others
+        # ちなみにtry-except-elseは，tryで例外処理が発生したらexcept，例外処理が発生しなかったらelseに飛ぶ
         if src_role==1:
             try:
-                label = "["+src.split("[")[1].split("]")[0]+"]"
+                label = "["+src.split("[")[1].split("]")[0]+"]"     # [Question] I'll do my best. What ... のラベルを取り出し
             except Exception as e:
                 strategy_labels.append(8)
             else:
@@ -375,6 +393,14 @@ def _get_inputs_from_text(text, tokenizer, strategy=True, cls = False):
         roles.append(src_role)
         turns.append(src_turn)
 
+    """
+    0: 自分, 1: 相手  ?
+    inputs: encoded,
+    roles: 0 or 1,
+    turns: 0 or 1,
+    strategy_labels: encoded,
+    emotion: 0 ~ 7
+    """
     return inputs, roles, turns, strategy_labels, emotion
 
 def construct_conv_ESD(idx, row, comet_row, comet_st_row, tokenizer, eos = True, pad=True, cls=False, evaluate=False, strategy=True, generation=False):
@@ -391,6 +417,8 @@ def construct_conv_ESD(idx, row, comet_row, comet_st_row, tokenizer, eos = True,
     comet_ids, comet_mask = _get_comet_input(comet_row, tokenizer)
     comet_st_ids, comet_st_mask = _get_comet_input(comet_st_row, tokenizer, max_num_attr=20)
     feature = InputFeatures_blender(feature, d_feature, comet_ids, comet_mask, emotion, comet_st_ids, comet_st_mask)
+    # InputFeature_blender() は，引数の情報をまとめて保持するためのオブジェクト
+    # feature は↑のオブジェクトそのもの．生成した多数の情報を持っている
     return feature
 
 
@@ -448,7 +476,7 @@ class ESDDataset(Dataset):
         return len(self.features)
 
     def __getitem__(self, item):
-        return self.features[item]
+        return self.features[item]      # features: ↑のhandle(chached fileをopenしたもの)
 
     @staticmethod
     def collate(features):
@@ -1191,7 +1219,7 @@ def generate(args):
     strategy_record = []
     strategy_hits_topk = [[] for _ in range(8)]
     for idx, (c_text, comet_row, comet_st_row) in tqdm(enumerate(zip(chat_texts[:-1], comet[:-1], comet_st[:-1])), desc="Testing"):
-        if "EOS" not in c_text:
+        if "EOS" not in c_text:     # "EOS"が含まれていなければスキップ
             continue
         # if idx>=100:
         #     break
@@ -1200,6 +1228,7 @@ def generate(args):
         # gts.append(" ".join(tokens[1:]))
         # = max(tokenizer.encode(tokens[0]))
         chat_history = c_text
+        # f: feature. 
         f = construct_conv_ESD(idx, chat_history, comet_row, comet_st_row, tokenizer, eos = True, pad=False, cls=False, strategy=False, generation=True)
         if len(f.input_ids) >= args.block_size:
             f.input_ids = f.input_ids[-args.block_size:]

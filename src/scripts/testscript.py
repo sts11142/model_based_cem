@@ -1,3 +1,10 @@
 import numpy as np
+import os
 
-print(np.load('../../data/ED/sys_dialog_texts.dev.npy', allow_pickle=True))
+data_dir = './data/ED/'
+os.chdir(data_dir)
+
+np.set_printoptions(edgeitems=50)
+
+# print(np.load('sys_dialog_texts.train.npy', allow_pickle=True))   # dialogue
+print(np.load('sys_target_texts.train.npy', allow_pickle=True))     # emotion

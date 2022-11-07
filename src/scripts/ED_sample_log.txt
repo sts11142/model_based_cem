@@ -1,0 +1,299 @@
+== dialogue ==
+
+[list(['I remember going to see the fireworks with my best friend. It was the first time we ever spent time alone together. Although there was a lot of people, we felt like the only people in the world.'])
+ list(['I remember going to see the fireworks with my best friend. It was the first time we ever spent time alone together. Although there was a lot of people, we felt like the only people in the world.', 'Was this a friend you were in love with, or just a best friend?', 'This was a best friend. I miss her.'])
+ list(['I remember going to see the fireworks with my best friend. It was the first time we ever spent time alone together. Although there was a lot of people, we felt like the only people in the world.', 'Was this a friend you were in love with, or just a best friend?', 'This was a best friend. I miss her.', 'Where has she gone?', 'We no longer talk.'])
+ list(['it feels like hitting to blank wall when i see the darkness'])
+ list(['it feels like hitting to blank wall when i see the darkness', "Oh ya? I don't really see how", 'dont you feel so.. its a wonder'])
+ list(['it feels like hitting to blank wall when i see the darkness', "Oh ya? I don't really see how", 'dont you feel so.. its a wonder', 'I do actually hit blank walls a lot of times but i get by', 'i virtually thought so.. and i used to get sweatings'])
+ list(['Hi how are you doing today'])
+ list(['Hi how are you doing today', 'doing good.. how about you', 'Im good, trying to understand how someone can feel like hitting a blank wall when they see the darkness'])
+ list(['I have never cheated on my wife.'])
+ list(['I have never cheated on my wife.', 'And thats something you should never do, good on you.', "Yea it hasn't been easy but I am proud I haven't"])
+ list(['Job interviews always make me sweat bullets, makes me uncomfortable in general to be looked at under a microscope like that.'])
+ list(['Job interviews always make me sweat bullets, makes me uncomfortable in general to be looked at under a microscope like that.', "Don't be nervous. Just be prepared.", 'I feel like getting prepared and then having a curve ball thrown at you throws you off.'])
+ list(['Hi, this year, I was the first over 300 students at my enginering school'])
+ list(['Hi, this year, I was the first over 300 students at my enginering school', "Sounds great! So what's your major?", 'It is computer science. I am very happy of this achievement and my family is very proud.'])
+ list(['I lost my job last year and got really angry.'])
+ list(['I lost my job last year and got really angry.', 'I am sorry to hear that. Did it happen out of the blue?', 'Yes, it was a complete surprise.'])
+ list(['During christmas a few years ago, I did not get any presents.'])
+ list(['During christmas a few years ago, I did not get any presents.', 'Wow, that must be terrible, I cannot imagine, I lvoe christmas', 'Since that day christmas has not been a good time for me. As I have no family, christmas is always the worst.'])
+ list(['My coworker is allowed to work remotely, but I am not...'])
+ list(['My coworker is allowed to work remotely, but I am not...', 'I work remotely, I wish that you could do something like that as well.', 'I do too, it is unfortnuate because, unbiased, I am our best performer, so it is curious'])
+ list(["Hi, I went to a park and I set on a bench. I didn't notice that my wallet felt. A man came to me from behind giving me back my wallet."])
+ list(["Hi, I went to a park and I set on a bench. I didn't notice that my wallet felt. A man came to me from behind giving me back my wallet.", 'Thats a sweet man, I hope you acknowledged his kind gesture.', 'Yes, I did. I was so grateful because I have a lot of money in my wallet.'])
+ list(["People get rejected all the time but it shouldn't be an excuse to let it dissuade you from reaching your goals."])
+ list(["People get rejected all the time but it shouldn't be an excuse to let it dissuade you from reaching your goals.", 'What happened?', 'Got rejected from a place I wanted to work, not once but three times'])
+ list(['I had to board my entire house when the hurricane was coming.'])
+ list(['I had to board my entire house when the hurricane was coming.', 'WOW! Did it do any damage?', 'No luckily the house was ok.'])
+ list(['Once when I was in preschool, my pants fell down in front of the whole class, I was so embarassed'])
+ list(['Once when I was in preschool, my pants fell down in front of the whole class, I was so embarassed', 'haha yeah that would be very bad !', 'It was, I almost cried cause everyone was laughing at me'])
+ list(['I never thought things would go like this.'])
+ list(['I never thought things would go like this.', 'What happened for you to feel that way?', 'I was at the beach and a hurricane changed track and was coming straight at us. My boyfriend didnt want to leave because we were on the second day only of our vacation.'])
+ ...
+ list(['My friend just won a lottery and got tickets to the Superbowl and I lost!'])
+ list(['My friend just won a lottery and got tickets to the Superbowl and I lost!', 'Oh gosh, is he going to take you to the Superbowl at least?', 'I dont think he can since he only won one ticket. I am beyond jealous right now but also happy for him since he really wants to go.'])
+ list(['we went to disney with the kids it was amazing'])
+ list(['we went to disney with the kids it was amazing', 'Nice! I want to take my daughter when she is older. Did you go to Disneyland or world?', 'land!'])
+ list(['My mom gave me one of our old photo albums the other day.'])
+ list(['My mom gave me one of our old photo albums the other day.', 'aww that is great!', 'Yeah it really brought back some great memories!'])
+ list(['i was in the break room and took a extra doughnut'])
+ list(['i was in the break room and took a extra doughnut', 'Oh naughty. Did anyone see you?', 'no but i still feel bad about it'])
+ list(['I am all packed and ready to go see my family!'])
+ list(['I am all packed and ready to go see my family!', 'Are you making a trip to see your family?', 'Yes! We are driving up to see them on Monday.'])
+ list(['I recently found that I was adopted. I felt terrible bad.'])
+ list(['I recently found that I was adopted. I felt terrible bad.', 'That would definitely be a difficult thing to find out. How did you find out?', 'I had an argument with my oncle. He is one that told me. He told me You are not part of this family!!! You are adopted!!!'])
+ list(['I lost my swim bottoms going down the slide at the water park.'])
+ list(['I lost my swim bottoms going down the slide at the water park.', "Haha.. I feel like that's almost a rite of passage when going to water parks. I've had that happen, too. Hopefully it wasn't too traumatic for you. I almost lost my glasses once, too! Now that was really scary", 'It was horrible, but I recovered! No shame.'])
+ list(['My apartment complex is nickel and diming me and counting off so many things wrong with the apartment to detract from my security deposit as I get set to leave after this month. I know people said to expect to never see your security deposit again, but this is ridiculous! I feel like the apartment is pretty much exactly the same'])
+ list(['My apartment complex is nickel and diming me and counting off so many things wrong with the apartment to detract from my security deposit as I get set to leave after this month. I know people said to expect to never see your security deposit again, but this is ridiculous! I feel like the apartment is pretty much exactly the same', 'I hate when that happens! The same thing happened to me when I moved out of my apartment. They kept my security deposit because they needed to replace carpet.', "It's a racket. The building is from the 1950s and has hardly been updated. Of course everything is going to look like crap. They just splash the cheapest white paint everywhere. At least there's no carpet in mine that would need to be replaced. Bleh"])
+ list(['My boss informed me that I am in the first position of getting the promotion'])
+ list(['My boss informed me that I am in the first position of getting the promotion', "That's pretty awesome, congrats", 'Thanks, my confidence in my abilities is just getting better and better!'])
+ list(["People can give me all the bullshit advice they want on how to live my life and how I need to know my place in society....but I'll just smile and nod because I only trust my instincts and am have ridiculously more freedom, money and happiness than I've ever had before"])
+ list(["People can give me all the bullshit advice they want on how to live my life and how I need to know my place in society....but I'll just smile and nod because I only trust my instincts and am have ridiculously more freedom, money and happiness than I've ever had before", "Good on you. You need to be comfortable in your own skin and its not other people's business to tell you how to live.", "Exactly.  Funny thing is they're usually the same people that bitch and moan on Facebook about having a job or boss they hate but do nothing to change their path it's hilarious"])
+ list(['i was inbed last night and heard a loud bang in the kitchen'])
+ list(['i was inbed last night and heard a loud bang in the kitchen', 'Did you get up to check it out?', 'yeah i was sneaking in there when i found the cat looking as guilty as can be'])
+ list(['I have an overseas trip coming up. I have never been and I am feeling a little scared right now about going.'])
+ list(['I have an overseas trip coming up. I have never been and I am feeling a little scared right now about going.', 'that is exciting@', 'Yea but I have never been in a foreign country before.'])
+ list(['I was watching professional rodeo last night. I was amazed at how the cowboyos can stay on the bulls so long.'])
+ list(['I was watching professional rodeo last night. I was amazed at how the cowboyos can stay on the bulls so long.', 'That is an amazing talent to have. I would be so scared!', 'Yeah they must practice a lot. I would be afraid of getting trampled.'])
+ list(['I am waiting to see if I pass the GRE.'])
+ list(['I am waiting to see if I pass the GRE.', "I hope you did it. Don't worry too much.", 'Thank you, I am trying my best.'])
+ list(['What a scary night that was.'])
+ list(['What a scary night that was.', 'What happened? Hope you are okay?', 'My house burned night earlier, had to get my mom out.'])]
+
+
+== emotion ==
+
+['sentimental' 'sentimental' 'sentimental' 'afraid' 'afraid' 'afraid'
+ 'proud' 'proud' 'faithful' 'faithful' 'terrified' 'terrified' 'joyful'
+ 'joyful' 'angry' 'angry' 'sad' 'sad' 'jealous' 'jealous' 'grateful'
+ 'grateful' 'sad' 'sad' 'prepared' 'prepared' 'embarrassed' 'embarrassed'
+ 'angry' 'angry' 'afraid' 'afraid' 'afraid' 'excited' 'excited' 'annoyed'
+ 'annoyed' 'angry' 'angry' 'lonely' 'lonely' 'proud' 'proud' 'sentimental'
+ 'sentimental' 'sentimental' 'joyful' 'joyful' 'ashamed' 'ashamed'
+ 'ashamed' 'guilty' 'guilty' 'surprised' 'surprised' 'nostalgic'
+ 'nostalgic' 'confident' 'confident' 'confident' 'annoyed' 'annoyed'
+ 'guilty' 'guilty' 'furious' 'furious' 'guilty' 'guilty' 'terrified'
+ 'terrified' 'terrified' 'furious' 'furious' 'furious' 'disappointed'
+ 'disappointed' 'faithful' 'faithful' 'caring' 'caring' 'sad' 'sad'
+ 'disappointed' 'disappointed' 'grateful' 'grateful' 'sentimental'
+ 'sentimental' 'excited' 'excited' 'excited' 'excited' 'excited' 'caring'
+ 'caring' 'afraid' 'afraid' 'annoyed' 'annoyed' 'trusting' ... 'content'
+ 'apprehensive' 'apprehensive' 'jealous' 'jealous' 'sentimental'
+ 'sentimental' 'apprehensive' 'apprehensive' 'apprehensive' 'apprehensive'
+ 'disgusted' 'disgusted' 'sentimental' 'sentimental' 'content' 'content'
+ 'proud' 'proud' 'devastated' 'devastated' 'embarrassed' 'embarrassed'
+ 'devastated' 'devastated' 'afraid' 'afraid' 'afraid' 'afraid' 'lonely'
+ 'lonely' 'prepared' 'prepared' 'apprehensive' 'apprehensive' 'confident'
+ 'confident' 'anxious' 'anxious' 'caring' 'caring' 'anxious' 'anxious'
+ 'hopeful' 'hopeful' 'hopeful' 'anxious' 'anxious' 'jealous' 'jealous'
+ 'guilty' 'guilty' 'faithful' 'faithful' 'joyful' 'joyful' 'excited'
+ 'excited' 'content' 'content' 'afraid' 'afraid' 'terrified' 'terrified'
+ 'confident' 'confident' 'sentimental' 'sentimental' 'embarrassed'
+ 'embarrassed' 'jealous' 'jealous' 'joyful' 'joyful' 'sentimental'
+ 'sentimental' 'guilty' 'guilty' 'prepared' 'prepared' 'devastated'
+ 'devastated' 'embarrassed' 'embarrassed' 'furious' 'furious' 'confident'
+ 'confident' 'faithful' 'faithful' 'afraid' 'afraid' 'apprehensive'
+ 'apprehensive' 'impressed' 'impressed' 'anticipating' 'anticipating'
+ 'afraid' 'afraid']
+
+
+== situation ==
+
+['I remember going to the fireworks with my best friend. There was a lot of people, but it only felt like us in the world.'
+ 'I remember going to the fireworks with my best friend. There was a lot of people, but it only felt like us in the world.'
+ 'I remember going to the fireworks with my best friend. There was a lot of people, but it only felt like us in the world.'
+ 'i used to scare for darkness' 'i used to scare for darkness'
+ 'i used to scare for darkness'
+ 'I showed a guy how to run a good bead in welding class and he caught on quick.'
+ 'I showed a guy how to run a good bead in welding class and he caught on quick.'
+ 'I have always been loyal to my wife.'
+ 'I have always been loyal to my wife.'
+ "A recent job interview that I had made me feel very anxious because I felt like I didn't come prepared."
+ "A recent job interview that I had made me feel very anxious because I felt like I didn't come prepared."
+ 'I am very happy to have been first over 300 students during this years at my enginering school'
+ 'I am very happy to have been first over 300 students during this years at my enginering school'
+ 'I once lost my job and got mad.' 'I once lost my job and got mad.'
+ 'One year during christmas, i did not get a single gift. It was a rough day for me.'
+ 'One year during christmas, i did not get a single gift. It was a rough day for me.'
+ 'I was at work, and my coworker was called into my bosses office. Then they were allowed to work remotely every monday. this made me jealous because I enjoy working from home'
+ 'I was at work, and my coworker was called into my bosses office. Then they were allowed to work remotely every monday. this made me jealous because I enjoy working from home'
+ "I went to a park and I set on a bench. I didn't notice that my wallet felt. A man came to me from behind giving me back my wallet."
+ "I went to a park and I set on a bench. I didn't notice that my wallet felt. A man came to me from behind giving me back my wallet."
+ 'I got recently got three rejection letters for 3 different jobs in a matter of a week and a half. That was a painful experience.'
+ 'I got recently got three rejection letters for 3 different jobs in a matter of a week and a half. That was a painful experience.'
+ 'I had my entire house boarded up when the hurricane came.'
+ 'I had my entire house boarded up when the hurricane came.'
+ 'one time when I was in preschool, I had to write on the board. when I got up, my pants fell down in front of the class, that embarassed me'
+ 'one time when I was in preschool, I had to write on the board. when I got up, my pants fell down in front of the class, that embarassed me'
+ 'I am so upset and mad. I cant believe what has happened!'
+ 'I am so upset and mad. I cant believe what has happened!'
+ 'Last year a tree fell on my house while my family was at home. The tree broke through the ceiling just a few feet away from my daughter. The experience was terrifying.'
+ 'Last year a tree fell on my house while my family was at home. The tree broke through the ceiling just a few feet away from my daughter. The experience was terrifying.'
+ 'Last year a tree fell on my house while my family was at home. The tree broke through the ceiling just a few feet away from my daughter. The experience was terrifying.'
+ 'Last week, I was watching the world cup, and watched croatia win from russia'
+ 'Last week, I was watching the world cup, and watched croatia win from russia'
+ 'I have someone always asking me questions about how to use mobile.'
+ 'I have someone always asking me questions about how to use mobile.'
+ "I spent all weekend working on my truck to fix a miss in the engine. Despite spending over $200 in parts, it didn't do a thing to fix the miss."
+ "I spent all weekend working on my truck to fix a miss in the engine. Despite spending over $200 in parts, it didn't do a thing to fix the miss."
+ 'A few years ago, my marriage broke up, and I found myself living alone for the first time in my life. Though I eventually grew accustomed to the solitude, it took a while to get used to it.'
+ 'A few years ago, my marriage broke up, and I found myself living alone for the first time in my life. Though I eventually grew accustomed to the solitude, it took a while to get used to it.'
+ 'I felt proud when I had accomplished a dream that I wanted to do for a long time.'
+ 'I felt proud when I had accomplished a dream that I wanted to do for a long time.'
+ 'When I spend time with my father outside by the fire when we are camping.'
+ 'When I spend time with my father outside by the fire when we are camping.'
+ 'When I spend time with my father outside by the fire when we are camping.'
+ 'I was so happy when I moved in to my new home. My girlfriend and I have been saving for awhile and we finally got the keys last month. Now we can finally move on with our life plans.'
+ 'I was so happy when I moved in to my new home. My girlfriend and I have been saving for awhile and we finally got the keys last month. Now we can finally move on with our life plans.'
+ 'I went to a party and it was real bad.'
+ 'I went to a party and it was real bad.' 
+ ...
+ 'I had stolen a few candies from the jar in the store. I had to tell my mom after.'
+ 'I had stolen a few candies from the jar in the store. I had to tell my mom after.'
+ 'I feel this way because I have hope that I will get into grad school.'
+ 'I feel this way because I have hope that I will get into grad school.'
+ 'I won the MVP award at a hockey tournament. I had 8 goals.'
+ 'I won the MVP award at a hockey tournament. I had 8 goals.'
+ 'I just bought my first house.  I get to move in next week.'
+ 'I just bought my first house.  I get to move in next week.'
+ 'I am feeling this way right now with my life. I am so thankful and happy.'
+ 'I am feeling this way right now with my life. I am so thankful and happy.'
+ 'I saw a creepy looking clown peering at me through the window. I almost jumped out of my skin. I ran into my basement and hid in a closet.'
+ 'I saw a creepy looking clown peering at me through the window. I almost jumped out of my skin. I ran into my basement and hid in a closet.'
+ 'my boyfriend dragged me to a haunted house and it was to much for me'
+ 'my boyfriend dragged me to a haunted house and it was to much for me'
+ "I make the good fluffy cheesecake. But sometimes it's hard because the egg whites have to be perfectly beaten."
+ "I make the good fluffy cheesecake. But sometimes it's hard because the egg whites have to be perfectly beaten."
+ 'I love so much my wife. She has been so caring and kind with me.'
+ 'I love so much my wife. She has been so caring and kind with me.'
+ 'I dislike when I have to get up in the middle of a training session when the whole class is filled, my face gets all red and blotchy.'
+ 'I dislike when I have to get up in the middle of a training session when the whole class is filled, my face gets all red and blotchy.'
+ 'My friend got tickets to the Superbowl and not me.'
+ 'My friend got tickets to the Superbowl and not me.'
+ 'I went to Disney with my family is was great!'
+ 'I went to Disney with my family is was great!'
+ 'My mom gave me an old photo album the other day. It really brought back the memories.'
+ 'My mom gave me an old photo album the other day. It really brought back the memories.'
+ 'I was in the break room and took two donuts when i was only allowed one'
+ 'I was in the break room and took two donuts when i was only allowed one'
+ 'I am ready for vacation!' 'I am ready for vacation!'
+ 'I recently found that I was adopted. I felt terrible bad.'
+ 'I recently found that I was adopted. I felt terrible bad.'
+ 'I lost my swim bottoms at the water park.'
+ 'I lost my swim bottoms at the water park.'
+ 'My apartment complex is nickel and diming me and counting off so many things wrong with the apartment to detract from my security deposit as I get set to leave after this month. I know people said to expect to never see your security deposit again, but this is ridiculous! I feel like the apartment is pretty much exactly the same!'
+ 'My apartment complex is nickel and diming me and counting off so many things wrong with the apartment to detract from my security deposit as I get set to leave after this month. I know people said to expect to never see your security deposit again, but this is ridiculous! I feel like the apartment is pretty much exactly the same!'
+ 'My boss informed me that I am in pole position of getting the promotion.'
+ 'My boss informed me that I am in pole position of getting the promotion.'
+ "If there's one thing I learned it's to trust my own judgment and mine alone.  Forget what the haters say and just keep grinding toward my goals"
+ "If there's one thing I learned it's to trust my own judgment and mine alone.  Forget what the haters say and just keep grinding toward my goals"
+ 'I was in bed and i heard a loud noise in my kitchen. but i was home alone!'
+ 'I was in bed and i heard a loud noise in my kitchen. but i was home alone!'
+ 'I have an overseas trip coming up. I have never been and I am feeling a little scared right now about going.'
+ 'I have an overseas trip coming up. I have never been and I am feeling a little scared right now about going.'
+ 'I was watching professional rodeo the other day. It is amazing how those cowboys can stay on the bulls so long. It looks so hard to do.'
+ 'I was watching professional rodeo the other day. It is amazing how those cowboys can stay on the bulls so long. It looks so hard to do.'
+ 'I am waiting to see if I pass my graduate exam and I am feeling this way.'
+ 'I am waiting to see if I pass my graduate exam and I am feeling this way.'
+ 'My house burned down and I had to rescue my family, It was a chilly night.'
+ 'My house burned down and I had to rescue my family, It was a chilly night.']
+
+
+== target ==
+
+['Was this a friend you were in love with, or just a best friend?'
+ 'Where has she gone?'
+ 'Oh was this something that happened because of an argument?'
+ "Oh ya? I don't really see how"
+ 'I do actually hit blank walls a lot of times but i get by'
+ 'Wait what are sweatings' 'doing good.. how about you'
+ "it's quite strange that you didnt imagine it"
+ 'And thats something you should never do, good on you.'
+ "What do you mean it hasn't been easy? How close have you come to cheating?"
+ "Don't be nervous. Just be prepared."
+ 'Yes but if you stay calm it will be ok.'
+ "Sounds great! So what's your major?"
+ "Well pleased. You should be having brains,man!That's a tough course,i hear."
+ 'I am sorry to hear that. Did it happen out of the blue?'
+ 'I am sorry to hear that. I hope it turned out to be a blessing in decise.'
+ 'Wow, that must be terrible, I cannot imagine, I lvoe christmas'
+ 'Wow, I am sorry to hear that, I wish I could make it a better holiday for you!'
+ 'I work remotely, I wish that you could do something like that as well.'
+ 'Sometimes in life, it is not about performance. Some people just get a shiner spoon.'
+ 'Thats a sweet man, I hope you acknowledged his kind gesture.'
+ "Their aren't that many well rounded people in the world these days so when you see one you should always show appreciation!"
+ 'What happened?'
+ 'I am sorry to hear that. I hope you find a better opportunity. Did you know why they rejected you?'
+ 'WOW! Did it do any damage?'
+ 'That is great. I would have been scared to death. Was it recent?'
+ 'haha yeah that would be very bad !'
+ 'Oh no , sorry to hear that happened to you :('
+ 'What happened for you to feel that way?'
+ 'Oh that does sound terrible. What did you guys decide to do?'
+ "That's very scary. I hope no one got hurt."
+ 'So happy everyone was fine!! Everything else can be fixed.'
+ 'So good to hear. Might want to trim some trees lol'
+ 'I saw that game. They won on penalty kicks!'
+ 'It was very tense. The other game with England and Sweden was not nearly as nerve-wracking.'
+ 'It must be so frustrating to have to answer the same thing over and over. Is she older?'
+ "My aunt does the same thing! I think what she is doing is accidentally deleting texts, and she doesn't understand how to check her contacts list. What do you think is happening with your co-worker?"
+ 'What is the problem with the engine?'
+ 'Sorry to hear that. I hope you find what is the problem with the engine.'
+ 'I felt sad and depressed due to my insecurities and felt rejected from society'
+ "The problem is I don't think you can grew out of my specific insecurity."
+ "I'm not familiar with abseiling, but I'm glad that you felt good about it."
+ "Oh, I see. No, I've never done that."
+ 'Hello! I am in such a good mood since I got my new home.'
+ 'I have a ton of backyard space that we have plans for. Camping would be a fun one.'
+ 'I want to look in to getting a nice fire pit for the house.'
+ 'What kind of house are you building?'
+ 'That sounds great. What are you most excited for?'
+ 'Why did you feel guilty for taking a drink?'
+ "I can understand. I am not a big drinker myself, but I wouldn't feel guilty about it.  Not unless you promised someone you wouldn't drink."
+ ... 
+ "Woah, hope she doesn't report you! Jk"
+ 'I see, hope she is able to understand!' 'What are you applying for?'
+ 'That sounds interesting, when do you learn if you got in?'
+ 'What game and what kind of award>'
+ 'Way to go! That is a great accomplishment!'
+ "Oh wow that is so exciting! I'm sure you are excited to move in."
+ "Aww that's great! I have two dogs, they become part of the family! Enjoy your new house :)"
+ 'You sound very content. What makes you happy?'
+ 'Well that is a good reason. You are blessed.'
+ 'Oh no, I would have had a heart attack.' 'Sell the house!'
+ 'Nice, how was it?' "Hope you're all right!"
+ 'Are you doing the cheesecake for your family?' 'That is great.'
+ "That's really nice! You should show her you appreciate her. Maybe cook her dinner!"
+ "Ahh yes, that's very nice too, good for her! You guys have a happy marriage."
+ 'Ugh that must so inconvenient and uncomfortable!'
+ 'I can relate, I get red face when ever I have to come infront of the class to present.'
+ 'Oh gosh, is he going to take you to the Superbowl at least?'
+ 'Just one ticket, that sounds lonely for him.'
+ 'Nice! I want to take my daughter when she is older. Did you go to Disneyland or world?'
+ 'California is fun to visit as well! Glad you all had fun.'
+ 'aww that is great!' 'yeah my mom did that for me a few years back'
+ 'Oh naughty. Did anyone see you?'
+ "Well it's not a huge deal in the grand scheme of the universe! I am sure it will be fine."
+ 'Are you making a trip to see your family?'
+ 'Great. It is always good to see your family. Is it very far?'
+ 'That would definitely be a difficult thing to find out. How did you find out?'
+ 'Wow. That is really horrible. I am so sorry that happened to you.'
+ "Haha.. I feel like that's almost a rite of passage when going to water parks. I've had that happen, too. Hopefully it wasn't too traumatic for you. I almost lost my glasses once, too! Now that was really scary"
+ "That's the spirit. It's good that you don't take yourself too seriously. Heck, my roommate walked in on me doing some self-pleasure just yesterday.. I used to think that was my worst nightmare, but in the moment I just did my best to laugh it off so we could move forward faster"
+ 'I hate when that happens! The same thing happened to me when I moved out of my apartment. They kept my security deposit because they needed to replace carpet.'
+ "Mine hadn't been replaced in 6 years, I found that out after the fact."
+ "That's pretty awesome, congrats"
+ "Confidence is key, it's honestly what upper management looks for not necessarily technical skills right off the bat...just like Leo DiCaprio in Catch Me if You Can haha"
+ "Good on you. You need to be comfortable in your own skin and its not other people's business to tell you how to live."
+ 'Yes, they should really learn to concentrate on their own life instead of complaining about other people.'
+ 'Did you get up to check it out?'
+ 'That would have scared me. At least it wasnt an intruder.'
+ 'that is exciting@' 'yeah same but it can be fun'
+ 'That is an amazing talent to have. I would be so scared!'
+ 'Me too, that would be terrible.'
+ "I hope you did it. Don't worry too much."
+ 'If you need to you can always take it again. Good luck!'
+ 'What happened? Hope you are okay?'
+ 'Omg that is so scary, I am so sorry to hear that.']

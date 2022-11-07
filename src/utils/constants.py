@@ -1,13 +1,13 @@
 DATA_FILES = lambda data_dir: {
     "train": [
         f"{data_dir}/sys_dialog_texts.train.npy",
-        f"{data_dir}/sys_target_texts.train.npy",
+        # f"{data_dir}/sys_target_texts.train.npy",
         f"{data_dir}/sys_emotion_texts.train.npy",
         f"{data_dir}/sys_situation_texts.train.npy",
     ],
     "dev": [
         f"{data_dir}/sys_dialog_texts.dev.npy",
-        f"{data_dir}/sys_target_texts.dev.npy",
+        # f"{data_dir}/sys_target_texts.dev.npy",
         f"{data_dir}/sys_emotion_texts.dev.npy",
         f"{data_dir}/sys_situation_texts.dev.npy",
     ],
@@ -18,6 +18,10 @@ DATA_FILES = lambda data_dir: {
         f"{data_dir}/sys_situation_texts.test.npy",
     ],
 }
+
+# DATA_FILES_ESConv = lambda data_dir: {
+#     "train"
+# }
 
 WORD_PAIRS = {
     "it's": "it is",
