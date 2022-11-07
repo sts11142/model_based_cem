@@ -134,7 +134,7 @@ def train(model, train_set, dev_set):
 
     except KeyboardInterrupt:
         print("-" * 89)
-        print("Exiting from training early")
+        print("Exiting from training early ... editted")
         model.save_model(best_ppl, n_iter)
         weights_best = deepcopy(model.state_dict())
 
