@@ -164,6 +164,8 @@ def encode(vocab, files):
         read_file()
     usage:
         data_dict 辞書の中身を満たしていく
+        data_dictの中身は，トークナイズされた要素
+        files: ex) train_files = ["dialogue", "target", "emotion", "situation"]
     """
     from src.utils.comet import Comet
 
@@ -179,16 +181,16 @@ def encode(vocab, files):
 
     for i, k in enumerate(data_dict.keys()):
         items = files[i]
-        if k == "context":
-            encode_ctx(vocab, items, data_dict, comet)
-        elif k == "emotion":
+        if k == "context": # items -> "sys_dialogue_texts.○○.np" のload後の中身
+            encode_ctx(vocab, items, data_dict, comet) # 形態素をヨウ素にもつタプルで返す
+        elif k == "emotion": # items -> "sys_emoition_texts.○○.np" のload後の中身
             data_dict[k] = items
-        else:
-            for item in tqdm(items):
-                item = process_sent(item)
+        else: # items -> "target", "situation"
+            for item in tqdm(items): # "target", "situation"の各ファイルの1行
+                item = process_sent(item) # 語のトークナイズ
                 data_dict[k].append(item)
                 vocab.index_words(item)
-        if i == 3:
+        if i == 3: # "situation"まで回ったら終了
             break
     assert (
         len(data_dict["context"])
@@ -213,7 +215,11 @@ def read_files(vocab):
     train_files = [np.load(f, allow_pickle=True) for f in files["train"]]
     dev_files = [np.load(f, allow_pickle=True) for f in files["dev"]]
     test_files = [np.load(f, allow_pickle=True) for f in files["test"]]
+    #### train_files = ["dialogue", "target", "emotion", "situation"]
 
+    # ファイルを読み込んでencodeする
+    # encode: emotionとかcontextとか毎にデータを分けた後，各々をトークナイズ
+    #         返り値は辞書
     data_train = encode(vocab, train_files)
     data_dev = encode(vocab, dev_files)
     data_test = encode(vocab, test_files)
@@ -237,6 +243,7 @@ def load_dataset():
             [data_tra, data_val, data_tst, vocab] = pickle.load(f)
     else:
         print("Building dataset...")
+        # data_tra他: 辞書
         data_tra, data_val, data_tst, vocab = read_files(
             vocab=Lang(
                 {
@@ -260,8 +267,132 @@ def load_dataset():
         print("[context]:", [" ".join(u) for u in data_tra["context"][i]])
         print("[target]:", " ".join(data_tra["target"][i]))
         print(" ")
+    
+    # 返却する値は，各々辞書形式で，各キーに対してcontextとかemotionのデータが格納されている
     return data_tra, data_val, data_tst, vocab
 
+class ESDDataset(Dataset):
+    def __init__(self, tokenizer: PreTrainedTokenizer, args, df, comet, comet_st, block_size=512, evaluate=False, strategy=True, test=False):
+    # def __init__(self, data, vocab)
+        # block_size = block_size - (tokenizer.model_max_length - tokenizer.max_len_single_sentence)
+        # self.tokenizer = tokenizer
+        # directory = args.data_cache_dir
+        # if not os.path.exists(directory):
+            # os.makedirs(directory)
+        
+        # if evaluate:
+        #     if not test:
+        #         cached_features_file = os.path.join(
+        #             directory, 'val_' + args.model_type + "_cached_lm_" + str(block_size)
+        #         )
+        #     else:
+        #         cached_features_file = os.path.join(
+        #             directory, 'test_' + args.model_type + "_cached_lm_" + str(block_size)
+        #         )
+        # else:
+        #     cached_features_file = os.path.join(
+        #         directory, 'trn_' + args.model_type + "_cached_lm_" + str(block_size)
+        #     )
+
+        if os.path.exists(cached_features_file) and not args.overwrite_cache:
+            logger.info("Loading features from cached file %s", cached_features_file)
+            with open(cached_features_file, "rb") as handle:
+                self.features = pickle.load(handle)
+        else:
+            logger.info("Creating features from dataset file at %s", directory)
+            print(len(df) , len(comet), len(comet_st))
+            assert len(df) == len(comet) == len(comet_st)
+            self.features = []
+            for idx, (row, comet_row, comet_st_row) in enumerate(zip(df[:-1], comet[:-1], comet_st[:-1])):
+                conv = construct_conv_ESD(idx, row, comet_row, comet_st_row, tokenizer, cls=False, strategy=strategy ,evaluate=evaluate)
+                if len(conv.input_ids) >= block_size:
+                    conv.input_ids = conv.input_ids[-block_size:]
+                    conv.input_ids[0] = tokenizer.encode(tokenizer.cls_token)[0]
+                else:
+                    conv.input_ids = tokenizer.encode(tokenizer.cls_token) + conv.input_ids
+                self.features.append(conv)
+
+            # Note that we are loosing the last truncated example here for the sake of simplicity (no padding)
+            # If your dataset is small, first you should loook for a bigger one :-) and second you
+            # can change this behavior by adding (model specific) padding.
+
+            logger.info("Saving features into cached file %s", cached_features_file)
+            with open(cached_features_file, "wb") as handle:
+                pickle.dump(self.features, handle, protocol=pickle.HIGHEST_PROTOCOL)
+            logger.info("Finished~")
+
+
+    def __len__(self):
+        return len(self.features)
+
+    def __getitem__(self, item):
+        return self.features[item]      # features: ↑のhandle(chached fileをopenしたもの)
+
+    @staticmethod
+    def collate(features):
+        input_ids = pad_sequence([torch.tensor(f.input_ids, dtype=torch.long)
+                                for f in features],
+                                batch_first=True, padding_value=0)
+
+        position_ids = pad_sequence([torch.tensor(f.position_ids,
+                                                dtype=torch.long)
+                                    for f in features],
+                                    batch_first=True, padding_value=0)
+        token_type_ids = pad_sequence([torch.tensor(f.token_type_ids,
+                                                    dtype=torch.long)
+                                        for f in features],
+                                        batch_first=True, padding_value=0)
+        role_ids = pad_sequence([torch.tensor(f.role_ids, 
+                                                dtype=torch.long)
+                                        for f in features],
+                                        batch_first=True, padding_value=0)
+        labels = pad_sequence([torch.tensor(f.lm_labels, dtype=torch.long)
+                                for f in features],
+                                batch_first=True, padding_value=-100)
+        
+        cls_positions = torch.tensor([f.cls_position for f in features], dtype=torch.long)
+        
+        cls_labels = torch.tensor([f.cls_label for f in features], dtype=torch.long)
+        
+        strategy_ids = pad_sequence([torch.tensor(f.strategy_ids, dtype=torch.long)
+                                for f in features],
+                                batch_first=True, padding_value=8)
+
+        decoder_input_ids = pad_sequence([torch.tensor(f.decoder_input_ids, dtype=torch.long)
+                                    for f in features],
+                                    batch_first=True, padding_value=0)
+        decoder_position_ids = pad_sequence([torch.tensor(f.decoder_position_ids,
+                                                    dtype=torch.long)
+                                        for f in features],
+                                    batch_first=True, padding_value=0)
+        decoder_token_type_ids = pad_sequence([torch.tensor(f.decoder_token_type_ids,
+                                                    dtype=torch.long)
+                                        for f in features],
+                                        batch_first=True, padding_value=0)
+        decoder_role_ids = pad_sequence([torch.tensor(f.decoder_role_ids,
+                                                dtype=torch.long)
+                                        for f in features],
+                                        batch_first=True, padding_value=0)
+        decoder_labels = pad_sequence([torch.tensor(f.decoder_lm_labels, dtype=torch.long)
+                                for f in features],
+                                batch_first=True, padding_value=-100)
+
+        decoder_cls_positions = torch.tensor([f.decoder_cls_position for f in features], dtype=torch.long)
+
+        decoder_cls_labels = torch.tensor([f.decoder_cls_label for f in features], dtype=torch.long)
+
+        decoder_strategy_ids = pad_sequence([torch.tensor(f.decoder_strategy_ids, dtype=torch.long)
+                                for f in features],
+                                batch_first=True, padding_value=8)
+        # print([f.comet_ids for f in features])
+        # print([f.comet_mask for f in features])
+        comet_ids = torch.tensor([f.comet_ids for f in features], dtype=torch.long)
+        comet_mask = torch.tensor([f.comet_mask for f in features], dtype=torch.long)
+        emotion = torch.tensor([f.emotion for f in features], dtype=torch.long)
+        comet_st_ids = torch.tensor([f.comet_st_ids for f in features], dtype=torch.long)
+        comet_st_mask = torch.tensor([f.comet_st_mask for f in features], dtype=torch.long)
+
+        return (input_ids, position_ids, token_type_ids, role_ids, labels, cls_positions, cls_labels, strategy_ids, decoder_input_ids, decoder_position_ids, decoder_token_type_ids, decoder_role_ids, decoder_labels, decoder_cls_positions, decoder_cls_labels, decoder_strategy_ids, comet_ids, comet_mask, emotion, comet_st_ids, comet_st_mask)
 
 class Dataset(data.Dataset):
     """Custom data.Dataset compatible with data.DataLoader."""
@@ -274,6 +405,7 @@ class Dataset(data.Dataset):
 
     def __init__(self, data, vocab):
         """Reads source and target sequences from txt files."""
+        # data には辞書(data_dict)が入る
         self.vocab = vocab
         self.data = data
         self.emo_map = emo_map
@@ -448,6 +580,7 @@ def prepare_data_seq(batch_size=32):
         の5つを返す
     """
 
+    # それぞれが辞書
     pairs_tra, pairs_val, pairs_tst, vocab = load_dataset()
 
     logging.info("Vocab  {} ".format(vocab.n_words))

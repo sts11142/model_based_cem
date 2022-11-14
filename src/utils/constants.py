@@ -1,13 +1,13 @@
 DATA_FILES = lambda data_dir: {
     "train": [
         f"{data_dir}/sys_dialog_texts.train.npy",
-        # f"{data_dir}/sys_target_texts.train.npy",
+        f"{data_dir}/sys_target_texts.train.npy",
         f"{data_dir}/sys_emotion_texts.train.npy",
         f"{data_dir}/sys_situation_texts.train.npy",
     ],
     "dev": [
         f"{data_dir}/sys_dialog_texts.dev.npy",
-        # f"{data_dir}/sys_target_texts.dev.npy",
+        f"{data_dir}/sys_target_texts.dev.npy",
         f"{data_dir}/sys_emotion_texts.dev.npy",
         f"{data_dir}/sys_situation_texts.dev.npy",
     ],
