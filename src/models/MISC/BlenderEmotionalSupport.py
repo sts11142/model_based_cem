@@ -343,7 +343,7 @@ def _norm_text(text):
         emo = int(emo)
         r = int(r)
         t = int(t)
-        toks = ' '.join(toks[:len(toks)])   # 文頭に空白を入れる？
+        toks = ' '.join(toks[:len(toks)])   # 文末に空白を入れる？
     except Exception as e:
         raise e
     return emo, r, t, toks

@@ -19,9 +19,20 @@ DATA_FILES = lambda data_dir: {
     ],
 }
 
-# DATA_FILES_ESConv = lambda data_dir: {
-#     "train"
-# }
+DATA_FILES_ESConv = lambda data_dir: {
+    "train": [
+        f"{data_dir}/trainWithStrategy_short.tsv",
+        f"{data_dir}/trainSituation.txt",
+    ],
+    "dev": [
+        f"{data_dir}/devWithStrategy_short.tsv",
+        f"{data_dir}/devSituation.txt",
+    ],
+    "test": [
+        f"{data_dir}/testWithStrategy_short.tsv",
+        f"{data_dir}/testSituation.txt",
+    ],
+}
 
 WORD_PAIRS = {
     "it's": "it is",
@@ -48,6 +59,34 @@ WORD_PAIRS = {
     "won't": "will not",
     "there's": "there is",
     "there're": "there are",
+}
+
+EMO_MAP_ESD = {
+    "anxiety": 0,
+    "anger": 1,
+    "fear": 2,
+    "depression": 3,
+    "sadness": 4,
+    "disgust": 5,
+    "shame": 6,
+    "nervousness": 7,
+    "pain": 8,
+    "jealousy": 9,
+    "guilt": 10,
+}
+
+MAP_EMO_ESD = {
+    0: "anxiety",
+    1: "anger",
+    2: "fear",
+    3: "depression",
+    4: "sadness",
+    5: "disgust",
+    6: "shame",
+    7: "nervousness",
+    8: "pain",
+    9: "jealousy",
+    10: "guilt",
 }
 
 EMO_MAP = {
