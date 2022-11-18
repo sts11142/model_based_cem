@@ -13,6 +13,10 @@ from src.models.Transformer.model import Transformer
 from src.utils.data.loader import prepare_data_seq
 from src.models.common import evaluate, count_parameters, make_infinite
 
+import nltk
+
+nltk.download('stopword')
+
 
 def make_model(vocab, dec_num):
     """

@@ -3,3 +3,7 @@
 
 # checkpoint
 /saved/CEM_19999_41.8034
+
+# pycache
+__pycache__/
+# *.pyc
