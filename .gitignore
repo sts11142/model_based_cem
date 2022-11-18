@@ -1,1 +1,5 @@
+# word embedding by GloVe
 /vectors/*.txt
+
+# checkpoint
+/saved/CEM_19999_41.8034
