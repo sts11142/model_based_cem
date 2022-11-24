@@ -61,7 +61,7 @@ WORD_PAIRS = {
     "there're": "there are",
 }
 
-EMO_MAP_ESD = {
+EMO_MAP = {
     "anxiety": 0,
     "anger": 1,
     "fear": 2,
@@ -75,7 +75,7 @@ EMO_MAP_ESD = {
     "guilt": 10,
 }
 
-MAP_EMO_ESD = {
+MAP_EMO = {
     0: "anxiety",
     1: "anger",
     2: "fear",
@@ -89,6 +89,7 @@ MAP_EMO_ESD = {
     10: "guilt",
 }
 
+"""
 EMO_MAP = {
     "surprised": 0,
     "excited": 1,
@@ -158,3 +159,4 @@ MAP_EMO = {
     30: "apprehensive",
     31: "faithful",
 }
+"""

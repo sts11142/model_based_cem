@@ -194,4 +194,4 @@ test_files = [np.load(f, allow_pickle=True) for f in files["test"]]
 
 print(f"ED: {train_files}\n")
 # print(f"ES: {contexts}\n")
-print(f"ES: {fdata}\n")
+print(f"ES: {fdata[2]}\n")
