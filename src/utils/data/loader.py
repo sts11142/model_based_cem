@@ -381,8 +381,8 @@ def load_dataset():
         キャッシュファイルがあればそれを読み込む．なければ新規で読み込んでキャッシュを作成する．
         読み込んだファイルの中身を返す(4つの値)
     """
-    # data_dir = config.data_dir
-    data_dir = "data/ESConv"
+    data_dir = config.data_dir
+    # data_dir = "data/ESConv"
 
     cache_file = f"{data_dir}/dataset_preproc.p"
     """
