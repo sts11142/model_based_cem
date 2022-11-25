@@ -12,10 +12,15 @@ from src.utils.common import save_config
 from nltk.corpus import wordnet, stopwords
 from src.utils.constants import DATA_FILES
 from src.utils.constants import EMO_MAP as emo_map
+from src.utils.constants import MAP_EMO as map_emo
 # from src.utils.constants import EMO_MAP_ESD as emo_map
 from src.utils.constants import WORD_PAIRS as word_pairs
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
+nltk.download('averaged_perceptron_tagger')
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
 
 relations = ["xIntent", "xNeed", "xWant", "xEffect", "xReact"]
 emotion_lexicon = json.load(open("data/NRCDict.json"))[0]
@@ -226,6 +231,7 @@ def _get_inputs_from_text(text):
     turns = []
     strategy_labels = []
     srcs = srcs.split(" EOS")
+    srcs_len = len(srcs)
     """
     srcs:
         ex) ['3 0 0 Hi there, can you help me? ', " 3 1 1 [Question] I'll do my best. What do you need help with? ", ' 3 0 2 I feel depressed because I had to quit my job and stay home with my kids because of their remote school. ', ' 3 1 3 [Reflection of feelings] I can understand why that would make you feel depressed. ', ' 3 0 4 Do you have any advice on how to feel better? ', " 3 1 5 [Providing Suggestions] Yes of course. It's good that you are acknowledging your feelings. To improve your mood you could practice hobbies or other things you enjoy doing."]
@@ -253,7 +259,9 @@ def _get_inputs_from_text(text):
         roles.append(src_role)
         turns.append(src_turn)
 
-    targets.append(inputs[-1])
+        if idx == (srcs_len - 1):
+            targets.append(inputs[-1])
+            inputs = inputs[0:(srcs_len - 1)]
 
     return inputs, emotion, targets, roles, turns, strategy_labels
 
@@ -292,7 +300,8 @@ def construct_conv_ESD(arr, file_type=None):
         inputs, emotion, targets, roles, turns, strategy_labels = _get_inputs_from_text(row) 
         contexts_fdata.append(inputs)
         target_data.append(targets)
-        emotion_data.append(emotion)
+        # emotion_data.append(emotion)
+        emotion_data.append(map_emo[emotion])
         situation_data.append(situ)
         others_data["roles"] = roles
         others_data["turns"] = turns
@@ -302,7 +311,7 @@ def construct_conv_ESD(arr, file_type=None):
     contexts_fdata = np.array(contexts_fdata, dtype=object)
     target_fdata = _make_target_fdata(target_data)
     # emotion_fdata = _make_emotion_fdata(emotion_data)
-    emotion_fdata = np.array(emotion, dtype=str)
+    emotion_fdata = np.array(emotion_data, dtype=str)
     situation_fdata = np.array(situation_data, dtype=str)
 
     return contexts_fdata, target_fdata, emotion_fdata, situation_fdata, others_data
@@ -311,17 +320,28 @@ def setup_fdata(file_type):
     # with open(config.data_dir + "/" + file_type + "WithStrategy_short.tsv", "r", encoding="utf-8") as f:
     with open("data/ESConv" + "/" + file_type + "WithStrategy_short.tsv", "r", encoding="utf-8") as f:
         df_trn = f.read().split("\n")
-    contexts, target, emotion, situation, _ = construct_conv_ESD(df_trn[:-1], file_type=file_type)
+    contexts, targets, emotions, situations, _ = construct_conv_ESD(df_trn[:-1], file_type=file_type)
 
     fdata = []
     fdata.append(contexts)
-    fdata.append(target)
-    fdata.append(emotion)
-    fdata.append(situation)
+    fdata.append(targets)
+    fdata.append(emotions)
+    fdata.append(situations)
 
-    fdata = np.array(fdata)
+    fdata = np.array(fdata, dtype=object)
 
     return fdata
+
+
+def _debug_ESC():
+    train_files = setup_fdata('train')
+    # dev_files = setup_fdata('dev')
+    # test_files = setup_fdata('test')
+
+    print(f"ES: {train_files}\n")
+
+    return
+
 
 def read_files(vocab):
     """
@@ -362,8 +382,11 @@ def load_dataset():
         キャッシュファイルがあればそれを読み込む．なければ新規で読み込んでキャッシュを作成する．
         読み込んだファイルの中身を返す(4つの値)
     """
-    data_dir = config.data_dir
+    # data_dir = config.data_dir
+    data_dir = "data/ESConv"
+
     cache_file = f"{data_dir}/dataset_preproc.p"
+    """
     if os.path.exists(cache_file):
         print("LOADING empathetic_dialogue")
         with open(cache_file, "rb") as f:
@@ -387,6 +410,25 @@ def load_dataset():
         with open(cache_file, "wb") as f:
             pickle.dump([data_tra, data_val, data_tst, vocab], f)
             print("Saved PICKLE")
+    """
+    print("Building dataset...")
+    # data_tra他: 辞書
+    data_tra, data_val, data_tst, vocab = read_files(
+        vocab=Lang(
+            {
+                config.UNK_idx: "UNK",
+                config.PAD_idx: "PAD",
+                config.EOS_idx: "EOS",
+                config.SOS_idx: "SOS",
+                config.USR_idx: "USR",
+                config.SYS_idx: "SYS",
+                config.CLS_idx: "CLS",
+            }
+        )
+    )
+    with open(cache_file, "wb") as f:
+        pickle.dump([data_tra, data_val, data_tst, vocab], f)
+        print("Saved PICKLE")
 
     for i in range(3):
         print("[situation]:", " ".join(data_tra["situation"][i]))
@@ -619,3 +661,7 @@ def prepare_data_seq(batch_size=32):
         vocab,
         len(dataset_train.emo_map),
     )
+
+
+if __name__ == "__main__":
+    _debug_ESC()

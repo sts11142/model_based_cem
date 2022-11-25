@@ -7,3 +7,10 @@
 # pycache
 __pycache__/
 # *.pyc
+
+# Comet repo
+/data/ED/Comet/
+# /data/ED/Comet/comet-atomic-2020
+# /data/ED/Comet/comet.py
+/data/Comet
+!/data/ED/Comet/.keep

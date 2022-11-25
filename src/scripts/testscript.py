@@ -1,12 +1,12 @@
 import numpy as np
 import os
 
-data_dir = './data/ED/'
-data_dir = "./data/ESConv"
-os.chdir(data_dir)
+# data_dir = './data/ED/'
+# data_dir = "./data/ESConv"
+# os.chdir(data_dir)
 np.set_printoptions(edgeitems=10)
 
-EMO_MAP_ESD = {
+emo_map = {
     "anxiety": 0,
     "anger": 1,
     "fear": 2,
@@ -20,7 +20,7 @@ EMO_MAP_ESD = {
     "guilt": 10,
 }
 
-MAP_EMO_ESD = {
+map_emo = {
     0: "anxiety",
     1: "anger",
     2: "fear",
@@ -59,6 +59,7 @@ def _get_inputs_from_text(text):
     turns = []
     strategy_labels = []
     srcs = srcs.split(" EOS")
+    srcs_len = len(srcs)
     """
     srcs:
         ex) ['3 0 0 Hi there, can you help me? ', " 3 1 1 [Question] I'll do my best. What do you need help with? ", ' 3 0 2 I feel depressed because I had to quit my job and stay home with my kids because of their remote school. ', ' 3 1 3 [Reflection of feelings] I can understand why that would make you feel depressed. ', ' 3 0 4 Do you have any advice on how to feel better? ', " 3 1 5 [Providing Suggestions] Yes of course. It's good that you are acknowledging your feelings. To improve your mood you could practice hobbies or other things you enjoy doing."]
@@ -86,25 +87,16 @@ def _get_inputs_from_text(text):
         roles.append(src_role)
         turns.append(src_turn)
 
-        # if idx < 10 and src_role == 1:
-        #     print(f"emo: {emotion}")
-        #     print(f"rol: {src_role}")
-        #     print(f"src: {src}")
-        #     # print(f"target: {target}\n")
-        #     print(f"labels: {strategy_labels}\n")
-
-    targets.append(inputs[-1])
-    # print(f"inputs: {inputs}\n")
-    # print(f"targets: {targets}\n")
+        if idx == (srcs_len - 1):
+            targets.append(inputs[-1])
+            inputs = inputs[0:(srcs_len - 1)]
 
     return inputs, emotion, targets, roles, turns, strategy_labels
 
 def _make_emotion_fdata(emo_list):
     emo_fdata = []
     for (idx, emo) in enumerate(emo_list):
-        # if emo >= 8:
-            # emo_fdata.append([idx, emo])
-        emo_fdata.append(MAP_EMO_ESD[emo])
+        emo_fdata.append(emo_map[emo])
     emo_fdata = np.array(emo_fdata, dtype='U12')
 
     return emo_fdata
@@ -117,7 +109,7 @@ def _make_target_fdata(lists):
 
     return target_fdata
 
-def construct_conv_ESD(arr):
+def construct_conv_ESD(arr, file_type=None):
     contexts_fdata = []
     target_data = []
     emotion_data = []
@@ -127,7 +119,8 @@ def construct_conv_ESD(arr):
         "turns": [],
         "strategy_labels": []
     }
-    with open("trainSituation.txt", "r", encoding="utf-8") as f:
+
+    with open("data/ESConv" + "/" + file_type + "Situation.txt", "r", encoding="utf-8") as f:
         situation = f.read().split("\n")
 
     # for row in arr:
@@ -135,7 +128,8 @@ def construct_conv_ESD(arr):
         inputs, emotion, targets, roles, turns, strategy_labels = _get_inputs_from_text(row) 
         contexts_fdata.append(inputs)
         target_data.append(targets)
-        emotion_data.append(emotion)
+        # emotion_data.append(emotion)
+        emotion_data.append(map_emo[emotion])
         situation_data.append(situ)
         others_data["roles"] = roles
         others_data["turns"] = turns
@@ -144,15 +138,17 @@ def construct_conv_ESD(arr):
     
     contexts_fdata = np.array(contexts_fdata, dtype=object)
     target_fdata = _make_target_fdata(target_data)
-    emotion_fdata = _make_emotion_fdata(emotion_data)
+    # emotion_fdata = _make_emotion_fdata(emotion_data)
+    emotion_fdata = np.array(emotion_data, dtype=str)
     situation_fdata = np.array(situation_data, dtype=str)
 
     return contexts_fdata, target_fdata, emotion_fdata, situation_fdata, others_data
 
-
-with open("trainWithStrategy_short.tsv", "r", encoding="utf-8") as f:
-    df_trn = f.read().split("\n")
-    contexts, target, emotion, situation, others = construct_conv_ESD(df_trn[:-1])
+def setup_fdata(file_type):
+    # with open(config.data_dir + "/" + file_type + "WithStrategy_short.tsv", "r", encoding="utf-8") as f:
+    with open("data/ESConv" + "/" + file_type + "WithStrategy_short.tsv", "r", encoding="utf-8") as f:
+        df_trn = f.read().split("\n")
+    contexts, target, emotion, situation, _ = construct_conv_ESD(df_trn[:-1], file_type=file_type)
 
     fdata = []
     fdata.append(contexts)
@@ -160,7 +156,11 @@ with open("trainWithStrategy_short.tsv", "r", encoding="utf-8") as f:
     fdata.append(emotion)
     fdata.append(situation)
 
-    fdata = np.array(fdata)
+    fdata = np.array(fdata, dtype=object)
+    # fdata = np.array(fdata)
+
+    return fdata
+
 
 DATA_FILES = lambda data_dir: {
     "train": [
@@ -183,15 +183,19 @@ DATA_FILES = lambda data_dir: {
     ],
 }
 
-files = DATA_FILES("../ED/")
-train_files = [np.load(f, allow_pickle=True) for f in files["train"]]
-dev_files = [np.load(f, allow_pickle=True) for f in files["dev"]]
-test_files = [np.load(f, allow_pickle=True) for f in files["test"]]
+files = DATA_FILES("data/ED")
+train_files_ = [np.load(f, allow_pickle=True) for f in files["train"]]
+# dev_files = [np.load(f, allow_pickle=True) for f in files["dev"]]
+# test_files = [np.load(f, allow_pickle=True) for f in files["test"]]
+
+train_files = setup_fdata('train')
+dev_files = setup_fdata('dev')
+test_files = setup_fdata('test')
 
 
 # def _make_fdata(list):
 
 
-print(f"ED: {train_files}\n")
+print(f"ED: {train_files_}\n")
 # print(f"ES: {contexts}\n")
-print(f"ES: {fdata[2]}\n")
+print(f"ES: {train_files}\n")
