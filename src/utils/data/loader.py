@@ -411,24 +411,24 @@ def load_dataset():
             print("Saved PICKLE")
     # """
 
-    print("Building dataset...")
-    # data_tra他: 辞書
-    data_tra, data_val, data_tst, vocab = read_files(
-        vocab=Lang(
-            {
-                config.UNK_idx: "UNK",
-                config.PAD_idx: "PAD",
-                config.EOS_idx: "EOS",
-                config.SOS_idx: "SOS",
-                config.USR_idx: "USR",
-                config.SYS_idx: "SYS",
-                config.CLS_idx: "CLS",
-            }
+        print("Building dataset...")
+        # data_tra他: 辞書
+        data_tra, data_val, data_tst, vocab = read_files(
+            vocab=Lang(
+                {
+                    config.UNK_idx: "UNK",
+                    config.PAD_idx: "PAD",
+                    config.EOS_idx: "EOS",
+                    config.SOS_idx: "SOS",
+                    config.USR_idx: "USR",
+                    config.SYS_idx: "SYS",
+                    config.CLS_idx: "CLS",
+                }
+            )
         )
-    )
-    with open(cache_file, "wb") as f:
-        pickle.dump([data_tra, data_val, data_tst, vocab], f)
-        print("Saved PICKLE")
+        with open(cache_file, "wb") as f:
+            pickle.dump([data_tra, data_val, data_tst, vocab], f)
+            print("Saved PICKLE")
 
     for i in range(3):
         print("[situation]:", " ".join(data_tra["situation"][i]))
