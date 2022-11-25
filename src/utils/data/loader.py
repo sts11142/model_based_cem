@@ -381,8 +381,8 @@ def load_dataset():
         キャッシュファイルがあればそれを読み込む．なければ新規で読み込んでキャッシュを作成する．
         読み込んだファイルの中身を返す(4つの値)
     """
-    data_dir = config.data_dir
-    # data_dir = "data/ESConv"
+    # data_dir = config.data_dir
+    data_dir = "data/ESConv"
 
     cache_file = f"{data_dir}/dataset_preproc.p"
     # """
@@ -411,24 +411,24 @@ def load_dataset():
             print("Saved PICKLE")
     # """
 
-        print("Building dataset...")
-        # data_tra他: 辞書
-        data_tra, data_val, data_tst, vocab = read_files(
-            vocab=Lang(
-                {
-                    config.UNK_idx: "UNK",
-                    config.PAD_idx: "PAD",
-                    config.EOS_idx: "EOS",
-                    config.SOS_idx: "SOS",
-                    config.USR_idx: "USR",
-                    config.SYS_idx: "SYS",
-                    config.CLS_idx: "CLS",
-                }
-            )
-        )
-        with open(cache_file, "wb") as f:
-            pickle.dump([data_tra, data_val, data_tst, vocab], f)
-            print("Saved PICKLE")
+        # print("Building dataset...")
+        # # data_tra他: 辞書
+        # data_tra, data_val, data_tst, vocab = read_files(
+        #     vocab=Lang(
+        #         {
+        #             config.UNK_idx: "UNK",
+        #             config.PAD_idx: "PAD",
+        #             config.EOS_idx: "EOS",
+        #             config.SOS_idx: "SOS",
+        #             config.USR_idx: "USR",
+        #             config.SYS_idx: "SYS",
+        #             config.CLS_idx: "CLS",
+        #         }
+        #     )
+        # )
+        # with open(cache_file, "wb") as f:
+        #     pickle.dump([data_tra, data_val, data_tst, vocab], f)
+        #     print("Saved PICKLE")
 
     for i in range(3):
         print("[situation]:", " ".join(data_tra["situation"][i]))
