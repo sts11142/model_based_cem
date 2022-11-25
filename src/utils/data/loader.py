@@ -385,7 +385,7 @@ def load_dataset():
     # data_dir = "data/ESConv"
 
     cache_file = f"{data_dir}/dataset_preproc.p"
-    """
+    # """
     if os.path.exists(cache_file):
         print("LOADING empathetic_dialogue")
         with open(cache_file, "rb") as f:
@@ -409,7 +409,8 @@ def load_dataset():
         with open(cache_file, "wb") as f:
             pickle.dump([data_tra, data_val, data_tst, vocab], f)
             print("Saved PICKLE")
-    """
+    # """
+
     print("Building dataset...")
     # data_tra他: 辞書
     data_tra, data_val, data_tst, vocab = read_files(
