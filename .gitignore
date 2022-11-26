@@ -21,3 +21,6 @@ __pycache__/
 
 # for on colab
 /model_based_cem/
+
+# model of MISC
+/src/models/MISC
