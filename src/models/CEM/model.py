@@ -391,6 +391,8 @@ class CEM(nn.Module):
                 8000,
                 torch.optim.Adam(self.parameters(), lr=0, betas=(0.9, 0.98), eps=1e-9),
             )
+        
+        self.loaded_iter = 0
 
         if model_file_path is not None:
             print("loading weights from {}".format(model_file_path))
