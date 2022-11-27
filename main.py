@@ -106,12 +106,16 @@ def train(model, train_set, dev_set):
         writer = SummaryWriter(log_dir=config.save_path)
         weights_best = deepcopy(model.state_dict())
 
-        load_n_iter = weights_best["iter"]
+        load_n_iter = model.loaded_iter
 
         data_iter = make_infinite(train_set)    # make_infinite(): 引数(dataloader)をyieldでイテレーターに変換する関数
         for n_iter in tqdm(range(1000000)):
 
-
+            if n_iter < load_n_iter:
+                # if n_iter % 100 == 0:
+                #     print("continue")
+                next(data_iter)
+                continue
 
             if "cem" in config.model:
                 loss, ppl, bce, acc, _, _ = model.train_one_batch(

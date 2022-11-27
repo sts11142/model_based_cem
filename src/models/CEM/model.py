@@ -395,6 +395,7 @@ class CEM(nn.Module):
         if model_file_path is not None:
             print("loading weights from {}".format(model_file_path))
             state = torch.load(model_file_path, map_location=config.device)
+            self.loaded_iter = state["iter"]
             self.load_state_dict(state["model"])
             if load_optim:
                 # self.optimizer.load_state_dict(state["optimizer"])
