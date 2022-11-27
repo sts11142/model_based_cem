@@ -767,8 +767,12 @@ class NoamOpt:
         self.model_size = model_size
         self._rate = 0
 
-    def state_dict(self):
-        return self.optimizer.state_dict()
+    # def state_dict(self):
+    def state_dict(self, opt_state_dict=False):
+        if opt_state_dict:
+            return self.optimizer.load_state_dict(opt_state_dict)
+        else:
+            return self.optimizer.state_dict()
 
     def step(self):
         "Update parameters and rate"

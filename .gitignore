@@ -28,3 +28,5 @@ __pycache__/
 # saved test
 /save/test/*.MBPoSS.local
 events.out.tfevents.*
+save/test/
+save/

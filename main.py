@@ -27,6 +27,7 @@ def make_model(vocab, dec_num):
         vocab, dec_numをモデルに渡す
     """
     is_eval = config.test
+    load_checkpoints = config.load_checkpoints
     if config.model == "trs":
         model = Transformer(
             vocab,
@@ -63,12 +64,20 @@ def make_model(vocab, dec_num):
             is_eval=is_eval,
             model_file_path=config.model_path if is_eval else None,
         )
+    # elif config.model == "cem":
+    #     model = CEM(
+    #         vocab,
+    #         decoder_number=dec_num,
+    #         is_eval=is_eval,
+    #         model_file_path=config.model_path if is_eval else None,
+    #     )
     elif config.model == "cem":
         model = CEM(
             vocab,
             decoder_number=dec_num,
             is_eval=is_eval,
-            model_file_path=config.model_path if is_eval else None,
+            model_file_path=config.model_path if load_checkpoints or is_eval else None,
+            load_optim=load_checkpoints,
         )
         # model_file_path: default → save/test
 
@@ -96,8 +105,14 @@ def train(model, train_set, dev_set):
         patient = 0
         writer = SummaryWriter(log_dir=config.save_path)
         weights_best = deepcopy(model.state_dict())
+
+        # load_n_iter = weights_best["iter"]
+
         data_iter = make_infinite(train_set)    # make_infinite(): 引数(dataloader)をyieldでイテレーターに変換する関数
         for n_iter in tqdm(range(1000000)):
+
+
+
             if "cem" in config.model:
                 loss, ppl, bce, acc, _, _ = model.train_one_batch(
                     next(data_iter), n_iter     # dataごとにtrain_one_batch()を動作させる
@@ -114,7 +129,7 @@ def train(model, train_set, dev_set):
                     "lr", {"learning_rata": model.optimizer._rate}, n_iter
                 )
 
-            if (n_iter + 1) % check_iter == 0:
+            if (n_iter + 1) % check_iter == 0:  # check_iter(2000回)ごとにチェックを行いログを出力
                 model.eval()
                 model.epoch = n_iter
                 loss_val, ppl_val, bce_val, acc_val, _ = evaluate(
@@ -140,7 +155,7 @@ def train(model, train_set, dev_set):
     except KeyboardInterrupt:
         print("-" * 89)
         print("Exiting from training early ... editted")
-        model.save_model(best_ppl, n_iter)
+        model.save_model(best_ppl, n_iter, is_interrupt=True)
         weights_best = deepcopy(model.state_dict())
 
     return weights_best

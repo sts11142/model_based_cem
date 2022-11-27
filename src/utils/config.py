@@ -55,6 +55,10 @@ parser.add_argument("--is_coverage", action="store_true")
 parser.add_argument("--use_oov_emb", action="store_true")
 parser.add_argument("--pretrain_emb", default=True, action="store_true")
 parser.add_argument("--test", action="store_true")
+
+parser.add_argument("--load_checkpoints", action="store_true")
+parser.add_argument("--checkpoint_path", type=str, default="save/model_state.pth")
+
 parser.add_argument("--model", type=str, default="cem")
 parser.add_argument("--weight_sharing", action="store_true")
 parser.add_argument("--label_smoothing", default=True, action="store_true")
@@ -132,6 +136,9 @@ model_path = args.model_path
 save_path_dataset = args.save_path_dataset
 
 test = args.test
+
+load_checkpoints = args.load_checkpoints
+checkpoint_path = args.checkpoint_path
 
 ### transformer
 hop = args.hop

@@ -393,12 +393,15 @@ class CEM(nn.Module):
             )
 
         if model_file_path is not None:
-            print("loading weights")
+            print("loading weights from {}".format(model_file_path))
             state = torch.load(model_file_path, map_location=config.device)
             self.load_state_dict(state["model"])
             if load_optim:
-                self.optimizer.load_state_dict(state["optimizer"])
+                # self.optimizer.load_state_dict(state["optimizer"])
+                self.optimizer.state_dict(state["optimizer"])
             self.eval()
+
+            print("load_iter: {}".format(state["iter"]))
 
         self.model_dir = config.save_path
         if not os.path.exists(self.model_dir):
@@ -417,7 +420,7 @@ class CEM(nn.Module):
             universal=config.universal,
         )
 
-    def save_model(self, running_avg_ppl, iter):
+    def save_model(self, running_avg_ppl, iter, is_interrupt=False):
         state = {
             "iter": iter,
             "optimizer": self.optimizer.state_dict(),

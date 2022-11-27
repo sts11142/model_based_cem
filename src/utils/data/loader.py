@@ -619,6 +619,7 @@ def collate_fn(data):
 
 
 def prepare_data_seq(batch_size=32):
+# def prepare_data_seq(batch_size=11): # ESConv ver.
     """
     quated:
         main.py
