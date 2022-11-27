@@ -464,6 +464,20 @@ class EMPDG(nn.Module):
             universal=config.universal,
         )
         self.map_emo = {
+            0: "anxiety",
+            1: "anger",
+            2: "fear",
+            3: "depression",
+            4: "sadness",
+            5: "disgust",
+            6: "shame",
+            7: "nervousness",
+            8: "pain",
+            9: "jealousy",
+            10: "guilt",
+        }
+        """
+        self.map_emo = {
             0: "surprised",
             1: "excited",
             2: "annoyed",
@@ -497,6 +511,7 @@ class EMPDG(nn.Module):
             30: "apprehensive",
             31: "faithful",
         }
+        """
 
         ## emotional signal distilling
         self.identify = nn.Linear(config.emb_dim, decoder_number, bias=False)

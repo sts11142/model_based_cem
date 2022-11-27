@@ -24,3 +24,7 @@ __pycache__/
 
 # model of MISC
 /src/models/MISC
+
+# saved test
+/save/test/*.MBPoSS.local
+events.out.tfevents.*

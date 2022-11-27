@@ -297,3 +297,44 @@
  'If you need to you can always take it again. Good luck!'
  'What happened? Hope you are okay?'
  'Omg that is so scary, I am so sorry to hear that.']
+
+
+
+
+＝＝実験回した結果＝＝
+ED
+
+LOADING empathetic dialogue
+[situation]: i remember going to the fireworks with my best friend . there was a lot of people , but it only felt like us in the world .
+[emotion]: sentimental
+[context]: ['i remember going to see the fireworks with my best friend . it was the first time we ever spent time alone together . although there was a lot of people , we felt like the only people in the world .']
+[target]: was this a friend you were in love with , or just a best friend ?
+ 
+[situation]: i remember going to the fireworks with my best friend . there was a lot of people , but it only felt like us in the world .
+[emotion]: sentimental
+[context]: ['i remember going to see the fireworks with my best friend . it was the first time we ever spent time alone together . although there was a lot of people , we felt like the only people in the world .', 'was this a friend you were in love with , or just a best friend ?', 'this was a best friend . i miss her .']
+[target]: where has she gone ?
+ 
+[situation]: i remember going to the fireworks with my best friend . there was a lot of people , but it only felt like us in the world .
+[emotion]: sentimental
+[context]: ['i remember going to see the fireworks with my best friend . it was the first time we ever spent time alone together . although there was a lot of people , we felt like the only people in the world .', 'was this a friend you were in love with , or just a best friend ?', 'this was a best friend . i miss her .', 'where has she gone ?', 'we no longer talk .']
+[target]: oh was this something that happened because of an argument ?
+
+
+ES
+
+LOADING empathetic_dialogue
+[situation]: staying at home with kids and stopping outside work
+[emotion]: depression
+[context]: ['hi there , can you help me ?', "i 'll do my best . what do you need help with ?", 'i feel depressed because i had to quit my job and stay home with my kids because of their remote school .', 'i can understand why that would make you feel depressed .', 'do you have any advice on how to feel better ?']
+[target]: yes of course . it is good that you are acknowledging your feelings . to improve your mood you could practice hobbies or other things you enjoy doing .
+ 
+[situation]: i have been getting low grades lately and am scared i will be thrown out of my university .
+[emotion]: fear
+[context]: ['i feel that i am blowing my future because i am just not scoring well on tests these days . i just do not feel motivated to work as hard as i know that i should .', 'so you do not feel motivated and you are not scoring well , have i understood that correctly ?', 'yes . i know that the two things are probably related but i just do not know what to do about them .', 'what are you currently studying ?', 'i am studying microbiology . i do not know that i have the passion for it that i once did though .', 'your motivation and how you are studying is probably related , you are right . what attracted you to microbiology in the first place ?', 'i have always found it fascinating and have an uncle who is a microbiologist . but these days i feel i made the wrong decision . is it too late to change ?', 'it is never too late to change anything . however , i hear that you have always found it fascinating , have you considered talking to your uncle and seeing if you can find what you loved about it again ?', 'yes that does sound like good advice . i do not want to turn by back on my studies of the past years . but my grades are really poor and i am not sure what to do about that .']
+[target]: studying can be really difficult , especially when you are half way through . i struggled in my studies and found that talking to my tutors helped and approaching student support . have you tried anything like that or has your motivation held you back ?
+ 
+[situation]: my friends took some money as loan but they are unable to return .
+[emotion]: anger
+[context]: ['hello', 'good evening ! how are you on this cold fall night', 'not too good . i am owed a lot of money by my friends but they are not paying me back blaming covid .', 'i can understand how stressful this could be for you ! i would feel taken advantage of too', 'have you asked them when they thought they could pay you', 'have you asked them when they thought they could pay you']
+[target]: sorry i am not sure why it typed twice

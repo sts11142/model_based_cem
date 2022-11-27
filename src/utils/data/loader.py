@@ -349,11 +349,11 @@ def read_files(vocab):
     usage:
         ファイルの中身を元にencode()で作成した辞書を返す．train, dev, testの3つ分．
     """
+    #### train_files = ["dialogue", "target", "emotion", "situation"]
     # files = DATA_FILES(config.data_dir)
     # train_files = [np.load(f, allow_pickle=True) for f in files["train"]]
     # dev_files = [np.load(f, allow_pickle=True) for f in files["dev"]]
     # test_files = [np.load(f, allow_pickle=True) for f in files["test"]]
-    #### train_files = ["dialogue", "target", "emotion", "situation"]
 
     # 書き換え
     # files = DATA_FILES("data/ESConv")
@@ -381,13 +381,14 @@ def load_dataset():
         キャッシュファイルがあればそれを読み込む．なければ新規で読み込んでキャッシュを作成する．
         読み込んだファイルの中身を返す(4つの値)
     """
-    # data_dir = config.data_dir
-    data_dir = "data/ESConv"
+    data_dir = config.data_dir
+    # data_dir = "data/ESConv"
 
     cache_file = f"{data_dir}/dataset_preproc.p"
     # """
     if os.path.exists(cache_file):
-        print("LOADING empathetic_dialogue")
+        # print("LOADING empathetic_dialogue")
+        print("LOADING Emotional Support Conversation")
         with open(cache_file, "rb") as f:
             [data_tra, data_val, data_tst, vocab] = pickle.load(f)
     else:

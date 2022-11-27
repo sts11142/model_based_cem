@@ -70,6 +70,7 @@ def make_model(vocab, dec_num):
             is_eval=is_eval,
             model_file_path=config.model_path if is_eval else None,
         )
+        # model_file_path: default → save/test
 
     model.to(config.device)
 
