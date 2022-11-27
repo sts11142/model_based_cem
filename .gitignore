@@ -16,6 +16,8 @@ __pycache__/
 /data/Comet/*.txt
 /data/Comet/*.bin
 
+/data/ESConv/dataset_preproc.p
+
 # results folder
 /results/*.txt
 
