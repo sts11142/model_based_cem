@@ -350,7 +350,14 @@ class CEM(nn.Module):
         self.is_eval = is_eval
         self.rels = ["x_intent", "x_need", "x_want", "x_effect", "x_react"]
 
+        # Embeddingを作成
         self.embedding = share_embedding(self.vocab, config.pretrain_emb)
+        # 追加箇所
+        self.strategy_head = nn.Linear(config.emb_dim, 8)
+        self.strategy_embedding = nn.Embedding(8 + 1, config.emb_dim)
+        self.strategy_id = torch.tensor(range(8), dtype=torch.long)
+        self.batchNorm_strategy = nn.BatchNorm1d(8)
+
 
         self.encoder = self.make_encoder(config.emb_dim)
         self.emo_encoder = self.make_encoder(config.emb_dim)
@@ -474,6 +481,21 @@ class CEM(nn.Module):
         mask_emb = self.embedding(batch["mask_input"])
         src_emb = self.embedding(enc_batch) + mask_emb
         enc_outputs = self.encoder(src_emb, src_mask)  # batch_size * seq_len * 300
+
+        # strategyの処理部分
+        # hid_strategy = enc_outputs.clone()
+        strategy_logits = self.strategy_head(enc_outputs[:, 0, :])
+        batch_size = strategy_logits.shape[0]
+        strategy_id = self.strategy_id.to(strategy_logits.device)
+        strategy_logits = self.batchNorm_strategy(strategy_logits).unsqueeze(0)
+
+        strategy_logit_ground = [[0., 0., 0., 1., 0., 0., 0., 0.]] * batch_size # debug
+        strategy_logit_ground = torch.tensor(strategy_logit_ground) # debug
+        if strategy_logit_ground is not None:
+            strategy_embs = torch.bmm(strategy_logit_ground.unsqueeze(1), self.strategy_embedding(strategy_id).unsqueeze(0).repeat(batch_size, 1, 1))
+        else:
+            strategy_logits = self.batchNorm_strategy(strategy_logits)
+            strategy_embs = torch.bmm(F.softmax(strategy_logits, dim=-1).unsqueeze(1), self.strategy_embedding(strategy_id).unsqeeze(0).repeat(batch_size, 1, 1))
 
         # Commonsense relations
         cs_embs = []

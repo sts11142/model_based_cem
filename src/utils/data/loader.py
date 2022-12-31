@@ -14,6 +14,7 @@ from src.utils.constants import DATA_FILES
 from src.utils.constants import EMO_MAP as emo_map
 from src.utils.constants import MAP_EMO as map_emo
 from src.utils.constants import WORD_PAIRS as word_pairs
+from src.utils.constants import STRATEGY_MAP as strategy_map
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 nltk.download('averaged_perceptron_tagger')
@@ -179,6 +180,7 @@ def encode(vocab, files):
         "target": [],
         "emotion": [],
         "situation": [],
+        "strategy_label": [],
         "emotion_context": [],
         "utt_cs": [],
     }
@@ -188,20 +190,23 @@ def encode(vocab, files):
         items = files[i]
         if k == "context": # items -> "sys_dialogue_texts.○○.np" のload後の中身
             encode_ctx(vocab, items, data_dict, comet) # 形態素をヨウ素にもつタプルで返す
-        elif k == "emotion": # items -> "sys_emoition_texts.○○.np" のload後の中身
+        elif k == "emotion" or k == "strategy_label": # items -> "sys_emoition_texts.○○.np" のload後の中身
             data_dict[k] = items
+        # elif k == "strategy_label":
+        #     data_dict[k] = items
         else: # items -> "target", "situation"
             for item in tqdm(items): # "target", "situation"の各ファイルの1行
                 item = process_sent(item) # 語のトークナイズ
                 data_dict[k].append(item)
                 vocab.index_words(item)
-        if i == 3: # "situation"まで回ったら終了
+        if i == 4: # "situation"まで回ったら終了
             break
     assert (
         len(data_dict["context"])
         == len(data_dict["target"])
         == len(data_dict["emotion"])
         == len(data_dict["situation"])
+        == len(data_dict["strategy_label"])
         == len(data_dict["emotion_context"])
         == len(data_dict["utt_cs"])
     )
@@ -261,8 +266,9 @@ def _get_inputs_from_text(text):
         if idx == (srcs_len - 1):
             targets.append(inputs[-1])
             inputs = inputs[0:(srcs_len - 1)]
+            target_label = strategy_labels[-1]
 
-    return inputs, emotion, targets, roles, turns, strategy_labels
+    return inputs, emotion, targets, roles, turns, target_label
 
 def _make_emotion_fdata(emo_list):
     emo_fdata = []
@@ -273,6 +279,7 @@ def _make_emotion_fdata(emo_list):
     return emo_fdata
 
 def _make_target_fdata(lists):
+    # [ ["hoge"], ["huga"], ... ] → [ "hoge", "huga", ... ]
     target_fdata = []
     for list in lists:
         target_fdata.append(list[0])
@@ -296,7 +303,7 @@ def construct_conv_ESD(arr, file_type=None):
 
     # for row in arr:
     for (row, situ) in zip(arr, situation):
-        inputs, emotion, targets, roles, turns, strategy_labels = _get_inputs_from_text(row) 
+        inputs, emotion, targets, roles, turns, strategy_label = _get_inputs_from_text(row) 
         contexts_fdata.append(inputs)
         target_data.append(targets)
         # emotion_data.append(emotion)
@@ -304,7 +311,8 @@ def construct_conv_ESD(arr, file_type=None):
         situation_data.append(situ)
         others_data["roles"] = roles
         others_data["turns"] = turns
-        others_data["strategy_labels"] = strategy_labels
+        others_data["strategy_labels"].append(strategy_label)
+        # others_data["strategy_labels_id"].append(strategy_map[strategy_label])
 
     
     contexts_fdata = np.array(contexts_fdata, dtype=object)
@@ -313,19 +321,26 @@ def construct_conv_ESD(arr, file_type=None):
     emotion_fdata = np.array(emotion_data, dtype=str)
     situation_fdata = np.array(situation_data, dtype=str)
 
-    return contexts_fdata, target_fdata, emotion_fdata, situation_fdata, others_data
+    strategy_labels = others_data["strategy_labels"]
+    strategy_fdata = np.array(strategy_labels)
+
+    return contexts_fdata, target_fdata, emotion_fdata, situation_fdata, strategy_fdata
 
 def setup_fdata(file_type):
     # with open(config.data_dir + "/" + file_type + "WithStrategy_short.tsv", "r", encoding="utf-8") as f:
     with open("data/ESConv" + "/" + file_type + "WithStrategy_short.tsv", "r", encoding="utf-8") as f:
         df_trn = f.read().split("\n")
-    contexts, targets, emotions, situations, _ = construct_conv_ESD(df_trn[:-1], file_type=file_type)
+    # contexts, targets, emotions, situations, _ = construct_conv_ESD(df_trn[:-1], file_type=file_type)
+    contexts, targets, emotions, situations, strategy_labels = construct_conv_ESD(df_trn[:-1], file_type=file_type)
+
+    print(strategy_labels)
 
     fdata = []
     fdata.append(contexts)
     fdata.append(targets)
     fdata.append(emotions)
     fdata.append(situations)
+    fdata.append(strategy_labels)
 
     fdata = np.array(fdata, dtype=object)
 
@@ -436,6 +451,7 @@ def load_dataset():
         print("[emotion]:", data_tra["emotion"][i])
         print("[context]:", [" ".join(u) for u in data_tra["context"][i]])
         print("[target]:", " ".join(data_tra["target"][i]))
+        # print("[strategy_label]:", " ".join(data_tra["strategy_label"][i]))
         print(" ")
     
     # 返却する値は，各々辞書形式で，各キーに対してcontextとかemotionのデータが格納されている
@@ -456,6 +472,7 @@ class Dataset(data.Dataset):
         self.vocab = vocab
         self.data = data
         self.emo_map = emo_map
+        self.strategy_map = strategy_map
         self.analyzer = SentimentIntensityAnalyzer()
 
     def __len__(self):
@@ -483,6 +500,11 @@ class Dataset(data.Dataset):
             item["emotion_context"],
             item["emotion_context_mask"],
         ) = self.preprocess(item["emotion_context"])
+
+        # strategy
+        item["strategy"], item["strategy_label"] = self.preprocess_strategy(
+            self.data["strategy_label"][index], self.strategy_map
+        )
 
         item["cs_text"] = self.data["utt_cs"][index]
         item["x_intent_txt"] = item["cs_text"][0]
@@ -558,6 +580,11 @@ class Dataset(data.Dataset):
         program = [0] * len(emo_map)
         program[emo_map[emotion]] = 1
         return program, emo_map[emotion]
+
+    def preprocess_strategy(self, strategy_label, strategy_map):
+        program = [0] * len(strategy_map)
+        program[strategy_map[strategy_label]] = 1
+        return program, strategy_map[strategy_label]
 
 
 def collate_fn(data):

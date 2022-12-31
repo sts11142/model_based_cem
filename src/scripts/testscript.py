@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import torch
 
 # data_dir = './data/ED/'
 # data_dir = "./data/ESConv"
@@ -32,6 +33,17 @@ map_emo = {
     8: "pain",
     9: "jealousy",
     10: "guilt",
+}
+
+strategy_map = {
+    "[Question]": 0,
+    "[Restatement or Paraphrasing]": 1,
+    "[Reflection of feelings]": 2,
+    "[Self-disclosure]": 3,
+    "[Affirmation and Reassurance]": 4,
+    "[Providing Suggestions]": 5,
+    "[Information]": 6,
+    "[Others]": 7,
 }
 
 # print(np.load('sys_dialog_texts.train.npy', allow_pickle=True))   # dialogue
@@ -90,8 +102,9 @@ def _get_inputs_from_text(text):
         if idx == (srcs_len - 1):
             targets.append(inputs[-1])
             inputs = inputs[0:(srcs_len - 1)]
+            target_label = strategy_labels[-1]
 
-    return inputs, emotion, targets, roles, turns, strategy_labels
+    return inputs, emotion, targets, roles, turns, target_label
 
 def _make_emotion_fdata(emo_list):
     emo_fdata = []
@@ -125,7 +138,7 @@ def construct_conv_ESD(arr, file_type=None):
 
     # for row in arr:
     for (row, situ) in zip(arr, situation):
-        inputs, emotion, targets, roles, turns, strategy_labels = _get_inputs_from_text(row) 
+        inputs, emotion, targets, roles, turns, strategy_label = _get_inputs_from_text(row) 
         contexts_fdata.append(inputs)
         target_data.append(targets)
         # emotion_data.append(emotion)
@@ -133,7 +146,7 @@ def construct_conv_ESD(arr, file_type=None):
         situation_data.append(situ)
         others_data["roles"] = roles
         others_data["turns"] = turns
-        others_data["strategy_labels"] = strategy_labels
+        others_data["strategy_labels"].append(strategy_label)
 
     
     contexts_fdata = np.array(contexts_fdata, dtype=object)
@@ -142,19 +155,24 @@ def construct_conv_ESD(arr, file_type=None):
     emotion_fdata = np.array(emotion_data, dtype=str)
     situation_fdata = np.array(situation_data, dtype=str)
 
-    return contexts_fdata, target_fdata, emotion_fdata, situation_fdata, others_data
+    strategy_labels = others_data["strategy_labels"]
+    strategy_fdata = np.array(strategy_labels)
+    # strategy_fdata = [1]
+
+    return contexts_fdata, target_fdata, emotion_fdata, situation_fdata, strategy_fdata
 
 def setup_fdata(file_type):
     # with open(config.data_dir + "/" + file_type + "WithStrategy_short.tsv", "r", encoding="utf-8") as f:
     with open("data/ESConv" + "/" + file_type + "WithStrategy_short.tsv", "r", encoding="utf-8") as f:
         df_trn = f.read().split("\n")
-    contexts, target, emotion, situation, _ = construct_conv_ESD(df_trn[:-1], file_type=file_type)
+    contexts, target, emotion, situation, strategy_labels = construct_conv_ESD(df_trn[:-1], file_type=file_type)
 
     fdata = []
     fdata.append(contexts)
     fdata.append(target)
     fdata.append(emotion)
     fdata.append(situation)
+    fdata.append(strategy_labels)
 
     fdata = np.array(fdata, dtype=object)
     # fdata = np.array(fdata)
@@ -192,6 +210,55 @@ train_files = setup_fdata('train')
 dev_files = setup_fdata('dev')
 test_files = setup_fdata('test')
 
+def encode(files):
+    """
+    quated:
+        read_file()
+    usage:
+        data_dict 辞書の中身を満たしていく
+        data_dictの中身は，トークナイズされた要素
+        files: ex) train_files = ["dialogue", "target", "emotion", "situation"]
+    """
+
+    data_dict = {
+        "context": [],
+        "target": [],
+        "emotion": [],
+        "situation": [],
+        "strategy_label": [],
+        "emotion_context": [],
+        "utt_cs": [],
+    }
+
+    for i, k in enumerate(data_dict.keys()):
+        items = files[i]
+        if k == "emotion" or k == "strategy_label": # items -> "sys_emoition_texts.○○.np" のload後の中身
+            data_dict[k] = items
+        if i == 4: # "situation"まで回ったら終了
+            break
+    return data_dict
+
+data_dict = encode(train_files)
+
+def preprocess_strategy(strategy_label, strategy_map):
+    program = [0] * len(strategy_map)
+    program[strategy_map[strategy_label]] = 1
+    return program, strategy_map[strategy_label]
+
+def merge(sequences):
+    lengths = [len(seq) for seq in sequences]
+    padded_seqs = torch.ones(
+        len(sequences), max(lengths)
+    ).long()  ## padding index 1
+    for i, seq in enumerate(sequences):
+        end = lengths[i]
+        padded_seqs[i, :end] = seq[:end]
+    return padded_seqs, lengths
+
+stra, stra_label = preprocess_strategy(data_dict["strategy_label"][1], strategy_map)
+
+
+
 
 # def _make_fdata(list):
 
@@ -199,3 +266,6 @@ test_files = setup_fdata('test')
 print(f"ED: {train_files_}\n")
 # print(f"ES: {contexts}\n")
 print(f"ES: {train_files}\n")
+
+print(data_dict)
+print(stra, stra_label)
