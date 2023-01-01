@@ -474,7 +474,7 @@ class CEM(nn.Module):
 
         return torch.FloatTensor(weight).to(config.device)
 
-    def forward(self, batch):
+    def forward(self, batch, strategy_logit_ground):
         ## Encode the context (Semantic Knowledge)
         enc_batch = batch["input_batch"]
         src_mask = enc_batch.data.eq(config.PAD_idx).unsqueeze(1)
@@ -489,8 +489,6 @@ class CEM(nn.Module):
         strategy_id = self.strategy_id.to(strategy_logits.device)
         strategy_logits = self.batchNorm_strategy(strategy_logits).unsqueeze(0)
 
-        strategy_logit_ground = [[0., 0., 0., 1., 0., 0., 0., 0.]] * batch_size # debug
-        strategy_logit_ground = torch.tensor(strategy_logit_ground) # debug
         if strategy_logit_ground is not None:
             strategy_embs = torch.bmm(strategy_logit_ground.unsqueeze(1), self.strategy_embedding(strategy_id).unsqueeze(0).repeat(batch_size, 1, 1))
         else:
@@ -545,7 +543,12 @@ class CEM(nn.Module):
             cog_ref_ctx = cog_contrib * cog_ref_ctx
             cog_ref_ctx = self.cog_lin(cog_ref_ctx)
 
-        return src_mask, cog_ref_ctx, emo_logits
+            # connecting strategy
+            l = cog_ref_ctx.shape[1]
+            strategy_embs = strategy_embs.repeat(1, l, 1)
+            cog_ref_ctx = cog_ref_ctx + strategy_embs
+
+        return src_mask, cog_ref_ctx, emo_logits, strategy_logits
 
     def train_one_batch(self, batch, iter, train=True):
         (
@@ -560,12 +563,23 @@ class CEM(nn.Module):
         ) = get_input_from_batch(batch)     # src/models/common
         dec_batch, _, _, _, _ = get_output_from_batch(batch)    # src/models/common
 
+        # strategy
+        strategy_label = batch["strategy_label"]
+
+        if not train:
+            batch_size = strategy_label.shape[0]
+            onehot = torch.zeros(batch_size, 8).to(strategy_label.device)
+            strategy_logit_ground = onehot.scatter_(1, strategy_label.unsqueeze(1), 1)
+            strategy_logit_ground.float()
+        else:
+            strategy_logit_ground = None
+
         if config.noam:
             self.optimizer.optimizer.zero_grad()    # 勾配の初期化．Pytorchではこれをしないと前の計算結果から始まるらしい．
         else:
             self.optimizer.zero_grad()
 
-        src_mask, ctx_output, emo_logits = self.forward(batch)
+        src_mask, ctx_output, emo_logits, strategy_logits = self.forward(batch, strategy_logit_ground)
 
         # Decode
         sos_token = (
@@ -595,6 +609,8 @@ class CEM(nn.Module):
             logit.contiguous().view(-1, logit.size(-1)),
             dec_batch.contiguous().view(-1),
         )
+        strategy_label = torch.LongTensor(batch["strategy_label"]).to(config.device)
+        strategy_loss = nn.CrossEntropyLoss()(strategy_logits.view(-1, 8), strategy_label)
 
         if not (config.woDiv):
             _, preds = logit.max(dim=-1)
@@ -608,9 +624,9 @@ class CEM(nn.Module):
                 dec_batch.contiguous().view(-1),
             )
             div_loss /= target_tokens
-            loss = emo_loss + 1.5 * div_loss + ctx_loss
+            loss = emo_loss + 1.5 * div_loss + ctx_loss + strategy_loss
         else:
-            loss = emo_loss + ctx_loss
+            loss = emo_loss + ctx_loss + strategy_loss
 
         pred_program = np.argmax(emo_logits.detach().cpu().numpy(), axis=1)
         program_acc = accuracy_score(batch["program_label"], pred_program)

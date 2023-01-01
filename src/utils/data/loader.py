@@ -627,6 +627,10 @@ def collate_fn(data):
     d["target_program"] = item_info["emotion"]
     d["program_label"] = item_info["emotion_label"]
 
+    ##strategy
+    d["strategy"] = item_info["strategy"]
+    d["strategy_label"] = item_info["strategy_label"]
+
     ##text
     d["input_txt"] = item_info["context_text"]
     d["target_txt"] = item_info["target_text"]

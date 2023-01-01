@@ -257,7 +257,12 @@ def merge(sequences):
 
 stra, stra_label = preprocess_strategy(data_dict["strategy_label"][1], strategy_map)
 
-
+strategy_label = [np.random.randint(8) for i in range(20)]
+strategy_label = torch.tensor(strategy_label)
+batch_size = strategy_label.shape[0]
+onehot = torch.zeros(batch_size, 8).to(strategy_label.device)
+strategy_logit_ground = onehot.scatter_(1, strategy_label.unsqueeze(1), 1)
+strategy_logit_ground.float()
 
 
 # def _make_fdata(list):
@@ -269,3 +274,7 @@ print(f"ES: {train_files}\n")
 
 print(data_dict)
 print(stra, stra_label)
+
+print(strategy_logit_ground)
+
+print(" ")
