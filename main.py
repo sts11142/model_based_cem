@@ -202,4 +202,5 @@ def main():
 
 
 if __name__ == "__main__":
+    print("now is strategy_20221223")
     main()
