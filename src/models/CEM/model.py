@@ -491,10 +491,11 @@ class CEM(nn.Module):
         strategy_logits = self.batchNorm_strategy(strategy_logits).to(config.device)
 
         if strategy_logit_ground is not None:
-            strategy_embs = torch.bmm(strategy_logit_ground.unsqueeze(1), self.strategy_embedding(strategy_id).unsqueeze(0).repeat(batch_size, 1, 1).to(config.device))
+            strategy_embs = torch.bmm(strategy_logit_ground.unsqueeze(1), self.strategy_embedding(strategy_id).unsqueeze(0).repeat(batch_size, 1, 1))
         else:
             strategy_logits = self.batchNorm_strategy(strategy_logits)
-            strategy_embs = torch.bmm(F.softmax(strategy_logits, dim=-1).unsqueeze(1), self.strategy_embedding(strategy_id).unsqueeze(0).repeat(batch_size, 1, 1).to(config.device))
+            strategy_embs = torch.bmm(F.softmax(strategy_logits, dim=-1).unsqueeze(1), self.strategy_embedding(strategy_id).unsqueeze(0).repeat(batch_size, 1, 1))
+            strategy_embs = strategy_embs.to(config.device)
 
         # Commonsense relations
         cs_embs = []
