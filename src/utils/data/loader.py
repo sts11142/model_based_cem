@@ -451,7 +451,7 @@ def load_dataset():
         print("[emotion]:", data_tra["emotion"][i])
         print("[context]:", [" ".join(u) for u in data_tra["context"][i]])
         print("[target]:", " ".join(data_tra["target"][i]))
-        # print("[strategy_label]:", " ".join(data_tra["strategy_label"][i]))
+        print("[strategy_label]:", " ".join(data_tra["strategy_label"][i]))
         print(" ")
     
     # 返却する値は，各々辞書形式で，各キーに対してcontextとかemotionのデータが格納されている
