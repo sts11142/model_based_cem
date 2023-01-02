@@ -474,7 +474,7 @@ class CEM(nn.Module):
 
         return torch.FloatTensor(weight).to(config.device)
 
-    def forward(self, batch, strategy_logit_ground):
+    def forward(self, batch, strategy_logit_ground=None):
         ## Encode the context (Semantic Knowledge)
         enc_batch = batch["input_batch"]
         src_mask = enc_batch.data.eq(config.PAD_idx).unsqueeze(1)
@@ -566,9 +566,11 @@ class CEM(nn.Module):
 
         # strategy
         strategy_label = batch["strategy_label"]
+        strategy_label = torch.LongTensor(strategy_label)
 
-        if not train:
+        if train:
             batch_size = strategy_label.shape[0]
+            # batch_size = len(strategy_label)
             onehot = torch.zeros(batch_size, 8).to(strategy_label.device)
             strategy_logit_ground = onehot.scatter_(1, strategy_label.unsqueeze(1), 1)
             strategy_logit_ground.float()
@@ -675,7 +677,7 @@ class CEM(nn.Module):
             _,
             _,
         ) = get_input_from_batch(batch)
-        src_mask, ctx_output, _ = self.forward(batch)
+        src_mask, ctx_output, _, _ = self.forward(batch)
 
         ys = torch.ones(1, 1).fill_(config.SOS_idx).long().to(config.device)
         mask_trg = ys.data.eq(config.PAD_idx).unsqueeze(1)
@@ -735,7 +737,7 @@ class CEM(nn.Module):
             _,
             _,
         ) = get_input_from_batch(batch)
-        src_mask, ctx_output, _ = self.forward(batch)
+        src_mask, ctx_output, _, _ = self.forward(batch)
 
         ys = torch.ones(1, 1).fill_(config.SOS_idx).long().to(config.device)
         mask_trg = ys.data.eq(config.PAD_idx).unsqueeze(1)
