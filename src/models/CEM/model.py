@@ -631,7 +631,7 @@ class CEM(nn.Module):
                 dec_batch.contiguous().view(-1),
             )
             div_loss /= target_tokens
-            loss = emo_loss + 1.5 * div_loss + ctx_loss + 1.2 * strategy_loss
+            loss = emo_loss + 1.5 * div_loss + ctx_loss + 2.0 * strategy_loss
         else:
             loss = emo_loss + ctx_loss + strategy_loss
 
