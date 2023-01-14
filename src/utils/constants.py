@@ -100,6 +100,17 @@ STRATEGY_MAP = {
     "[Others]": 7,
 }
 
+MAP_STRATEGY = {
+    0: "[Question]",
+    1: "[Restatement or Paraphrasing]",
+    2: "[Reflection of feelings]",
+    3: "[Self-disclosure]",
+    4: "[Affirmation and Reassurance]",
+    5: "[Providing Suggestions]",
+    6: "[Information]",
+    7: "[Others]",
+}
+
 """
 EMO_MAP = {
     "surprised": 0,

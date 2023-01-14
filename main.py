@@ -118,7 +118,7 @@ def train(model, train_set, dev_set):
                 continue
 
             if "cem" in config.model:
-                loss, ppl, bce, acc, _, _ = model.train_one_batch(
+                loss, ppl, bce, acc, _, _, _ = model.train_one_batch(
                     next(data_iter), n_iter     # dataごとにtrain_one_batch()を動作させる
                 )
             else:

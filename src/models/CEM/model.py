@@ -22,6 +22,7 @@ from src.models.common import (
 )
 from src.utils import config
 from src.utils.constants import MAP_EMO
+from src.utils.constants import MAP_STRATEGY
 
 from sklearn.metrics import accuracy_score
 
@@ -636,16 +637,22 @@ class CEM(nn.Module):
         else:
             loss = emo_loss + ctx_loss + strategy_loss
 
-        pred_program = np.argmax(emo_logits.detach().cpu().numpy(), axis=1)
-        program_acc = accuracy_score(batch["program_label"], pred_program)
+        # pred_program = np.argmax(emo_logits.detach().cpu().numpy(), axis=1)
+        # program_acc = accuracy_score(batch["program_label"], pred_program)
+
+        pred_strategy = np.argmax(strategy_logits.detach().cpu().numpy(), axis=1)
+        strategy_acc = accuracy_score(batch["strategy_label"], pred_strategy)
 
         # print results for testing
         top_preds = ""
+        top_preds_strategy = ""
         comet_res = {}
 
         if self.is_eval:
             top_preds = emo_logits.detach().cpu().numpy().argsort()[0][-3:][::-1]
             top_preds = f"{', '.join([MAP_EMO[pred.item()] for pred in top_preds])}"
+            top_preds_strategy = strategy_logits.detach().cpu().numpy().argsort()[0][-3:][::-1]
+            top_preds_strategy = f"{', '.join([MAP_STRATEGY[pred.item()] for pred in top_preds_strategy])}"
             for r in self.rels:
                 txt = [[" ".join(t) for t in tm] for tm in batch[f"{r}_txt"]][0]
                 comet_res[r] = txt
@@ -658,9 +665,11 @@ class CEM(nn.Module):
             ctx_loss.item(),
             math.exp(min(ctx_loss.item(), 100)),
             emo_loss.item(),
-            program_acc,
+            # program_acc,
+            strategy_acc,
             top_preds,
             comet_res,
+            top_preds_strategy,
         )
 
     def compute_act_loss(self, module):

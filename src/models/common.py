@@ -9,6 +9,7 @@ import torch.nn.functional as F
 
 from src.utils import config
 from tqdm import tqdm
+from src.utils.constants import MAP_STRATEGY as map_strategy
 
 if config.model == "trs" or config.model == "multi-trs":
     from src.utils.decode.transformer import Translator
@@ -893,9 +894,10 @@ def write_config():
                     the_file.write("--{} {} ".format(k, v))
 
 
-def print_custum(emotion, dial, ref, hyp_b, hyp_g, pred_emotions, comet_res):
+def print_custum(emotion, dial, ref, hyp_b, hyp_g, pred_emotions, comet_res, strategy):
     res = ""
     res += "Emotion: {}".format(emotion) + "\n"
+    res += "Strategy: {}".format(strategy) + "\n"
     if pred_emotions:
         res += "Pred Emotions: {}".format(pred_emotions) + "\n"
     if comet_res:
@@ -928,7 +930,7 @@ def evaluate(model, data, ty="valid", max_dec_step=30):
         t = Translator(model, model.vocab)
     for j, batch in pbar:
         if config.model == "cem":
-            loss, ppl, bce_prog, acc_prog, top_preds, comet_res = model.train_one_batch(
+            loss, ppl, bce_prog, acc_prog, top_preds, comet_res, top_pred_strategy = model.train_one_batch(
                 batch, 0, train=False
             )
         else:
@@ -953,6 +955,7 @@ def evaluate(model, data, ty="valid", max_dec_step=30):
                     hyp_g=greedy_sent,
                     pred_emotions=top_preds,
                     comet_res=comet_res,
+                    strategy=map_strategy[batch["strategy_label"][i]]
                 )
                 results.append(temp)
         pbar.set_description(
