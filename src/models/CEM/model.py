@@ -650,6 +650,10 @@ class CEM(nn.Module):
 
         if self.is_eval:
             top_preds = emo_logits.detach().cpu().numpy().argsort()[0][-3:][::-1]
+            # top_preds = emo_logits.detach().cpu().numpy().argsort()
+            # top_preds = top_preds[0] # [[]] → []
+            # top_preds = top_preds[-3:] # pred上位3つをスライシング
+            # top_preds = top_preds[::-1] # 上下逆順に並び替え
             top_preds = f"{', '.join([MAP_EMO[pred.item()] for pred in top_preds])}"
             top_preds_strategy = strategy_logits.detach().cpu().numpy().argsort()[0][-3:][::-1]
             top_preds_strategy = f"{', '.join([MAP_STRATEGY[pred.item()] for pred in top_preds_strategy])}"

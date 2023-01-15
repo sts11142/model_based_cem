@@ -894,12 +894,14 @@ def write_config():
                     the_file.write("--{} {} ".format(k, v))
 
 
-def print_custum(emotion, dial, ref, hyp_b, hyp_g, pred_emotions, comet_res, strategy):
+def print_custum(emotion, dial, ref, hyp_b, hyp_g, pred_emotions, comet_res, strategy, pred_strategies):
     res = ""
     res += "Emotion: {}".format(emotion) + "\n"
     res += "Strategy: {}".format(strategy) + "\n"
     if pred_emotions:
         res += "Pred Emotions: {}".format(pred_emotions) + "\n"
+    if pred_strategies:
+        res += "Pred Strategies: {}".format(pred_strategies) + "\n"
     if comet_res:
         for k, v in comet_res.items():
             res += "{}:{}".format(k, v) + "\n"
@@ -955,7 +957,8 @@ def evaluate(model, data, ty="valid", max_dec_step=30):
                     hyp_g=greedy_sent,
                     pred_emotions=top_preds,
                     comet_res=comet_res,
-                    strategy=map_strategy[batch["strategy_label"][i]]
+                    strategy=map_strategy[batch["strategy_label"][i]],
+                    pred_strategies=top_pred_strategy,
                 )
                 results.append(temp)
         pbar.set_description(
