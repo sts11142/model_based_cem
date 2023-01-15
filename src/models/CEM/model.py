@@ -633,7 +633,7 @@ class CEM(nn.Module):
             )
             div_loss /= target_tokens
             # loss = emo_loss + 1.5 * div_loss + ctx_loss + 2.0 * strategy_loss
-            loss = 1.5 * div_loss + ctx_loss + 1.0 * strategy_loss
+            loss = 1.5 * div_loss + ctx_loss + 1.5 * strategy_loss
         else:
             loss = emo_loss + ctx_loss + strategy_loss
 
