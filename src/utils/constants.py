@@ -111,8 +111,7 @@ MAP_STRATEGY = {
     7: "[Others]",
 }
 
-"""
-EMO_MAP = {
+EMO_MAP_ED = {
     "surprised": 0,
     "excited": 1,
     "annoyed": 2,
@@ -147,7 +146,7 @@ EMO_MAP = {
     "faithful": 31,
 }
 
-MAP_EMO = {
+MAP_EMO_ED = {
     0: "surprised",
     1: "excited",
     2: "annoyed",
@@ -181,4 +180,3 @@ MAP_EMO = {
     30: "apprehensive",
     31: "faithful",
 }
-"""

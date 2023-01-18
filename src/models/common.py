@@ -957,7 +957,7 @@ def evaluate(model, data, ty="valid", max_dec_step=30):
                     hyp_g=greedy_sent,
                     pred_emotions=top_preds,
                     comet_res=comet_res,
-                    strategy=map_strategy[batch["strategy_label"][i]],
+                    strategy=map_strategy[batch["strategy_label"][i]] if "strategy_label" in batch.keys() else None,
                     pred_strategies=top_pred_strategy,
                 )
                 results.append(temp)

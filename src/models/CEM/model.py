@@ -21,7 +21,7 @@ from src.models.common import (
     top_k_top_p_filtering,
 )
 from src.utils import config
-from src.utils.constants import MAP_EMO
+from src.utils.constants import MAP_EMO_ED as MAP_EMO
 from src.utils.constants import MAP_STRATEGY
 
 from sklearn.metrics import accuracy_score
@@ -476,6 +476,11 @@ class CEM(nn.Module):
         return torch.FloatTensor(weight).to(config.device)
 
     def forward(self, batch, strategy_logit_ground=None):
+        # 強引なやり方だけどこれで我慢
+        if "strategy_label" not in batch.keys():
+            self.emo_lin = nn.Linear(config.hidden_dim, 32, bias=False)
+
+
         ## Encode the context (Semantic Knowledge)
         enc_batch = batch["input_batch"]
         src_mask = enc_batch.data.eq(config.PAD_idx).unsqueeze(1)
@@ -570,8 +575,9 @@ class CEM(nn.Module):
         dec_batch, _, _, _, _ = get_output_from_batch(batch)    # src/models/common
 
         # strategy
-        strategy_label = batch["strategy_label"]
-        strategy_label = torch.LongTensor(strategy_label)
+        if "strategy_label" in batch.keys():
+            strategy_label = batch["strategy_label"]
+            strategy_label = torch.LongTensor(strategy_label)
 
         if train:
             batch_size = strategy_label.shape[0]
@@ -617,8 +623,11 @@ class CEM(nn.Module):
             logit.contiguous().view(-1, logit.size(-1)),
             dec_batch.contiguous().view(-1),
         )
-        strategy_label = torch.LongTensor(batch["strategy_label"]).to(config.device)
-        strategy_loss = nn.CrossEntropyLoss()(strategy_logits.view(-1, 8), strategy_label)
+        if "strategy_label" in batch.keys():
+            strategy_label = torch.LongTensor(batch["strategy_label"]).to(config.device)
+            strategy_loss = nn.CrossEntropyLoss()(strategy_logits.view(-1, 8), strategy_label)
+        else:
+            strategy_loss = 0.0;
 
         if not (config.woDiv):
             _, preds = logit.max(dim=-1)
@@ -632,16 +641,16 @@ class CEM(nn.Module):
                 dec_batch.contiguous().view(-1),
             )
             div_loss /= target_tokens
-            # loss = emo_loss + 1.5 * div_loss + ctx_loss + 2.0 * strategy_loss
-            loss = 1.5 * div_loss + ctx_loss + 1.5 * strategy_loss
+            loss = emo_loss + 1.5 * div_loss + ctx_loss + 1.5 * strategy_loss
+            # loss = 1.5 * div_loss + ctx_loss + 1.5 * strategy_loss
         else:
             loss = emo_loss + ctx_loss + strategy_loss
 
-        # pred_program = np.argmax(emo_logits.detach().cpu().numpy(), axis=1)
-        # program_acc = accuracy_score(batch["program_label"], pred_program)
+        pred_program = np.argmax(emo_logits.detach().cpu().numpy(), axis=1)
+        program_acc = accuracy_score(batch["program_label"], pred_program)
 
         pred_strategy = np.argmax(strategy_logits.detach().cpu().numpy(), axis=1)
-        strategy_acc = accuracy_score(batch["strategy_label"], pred_strategy)
+        # strategy_acc = accuracy_score(batch["strategy_label"], pred_strategy)
 
         # print results for testing
         top_preds = ""
@@ -669,8 +678,8 @@ class CEM(nn.Module):
             ctx_loss.item(),
             math.exp(min(ctx_loss.item(), 100)),
             emo_loss.item(),
-            # program_acc,
-            strategy_acc,
+            program_acc,
+            # strategy_acc,
             top_preds,
             comet_res,
             top_preds_strategy,

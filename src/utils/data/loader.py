@@ -12,7 +12,9 @@ from src.utils.common import save_config
 from nltk.corpus import wordnet, stopwords
 from src.utils.constants import DATA_FILES
 from src.utils.constants import EMO_MAP as emo_map
+from src.utils.constants import EMO_MAP_ED as emo_map_ed
 from src.utils.constants import MAP_EMO as map_emo
+from src.utils.constants import EMO_MAP_ED as emo_map_ed
 from src.utils.constants import WORD_PAIRS as word_pairs
 from src.utils.constants import STRATEGY_MAP as strategy_map
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
@@ -398,14 +400,19 @@ def load_dataset():
     """
     data_dir = config.data_dir
     # data_dir = "data/ESConv"
+    data_dir_ED = "data/ED"
 
     cache_file = f"{data_dir}/dataset_preproc.p"
+    cache_file_ED = f"{data_dir_ED}/dataset_preproc.p"
     # """
     if os.path.exists(cache_file):
         # print("LOADING empathetic_dialogue")
         print("LOADING Emotional Support Conversation")
         with open(cache_file, "rb") as f:
             [data_tra, data_val, data_tst, vocab] = pickle.load(f)
+        with open(cache_file_ED, "rb") as f:
+            [_, _, data_tst, vocab] = pickle.load(f)
+            print("  test data: ED")
     else:
         print("Building dataset...")
         # data_tra他: 辞書
@@ -471,7 +478,10 @@ class Dataset(data.Dataset):
         # data には辞書(data_dict)が入る
         self.vocab = vocab
         self.data = data
-        self.emo_map = emo_map
+        if "strategy_label" in self.data.keys():
+            self.emo_map = emo_map
+        else:
+            self.emo_map = emo_map_ed
         self.strategy_map = strategy_map
         self.analyzer = SentimentIntensityAnalyzer()
 
@@ -494,7 +504,8 @@ class Dataset(data.Dataset):
         item["context"], item["context_mask"] = self.preprocess(item["context_text"])
         item["target"] = self.preprocess(item["target_text"], anw=True)
         item["emotion"], item["emotion_label"] = self.preprocess_emo(
-            item["emotion_text"], self.emo_map
+            item["emotion_text"],
+            self.emo_map
         )
         (
             item["emotion_context"],
@@ -502,8 +513,9 @@ class Dataset(data.Dataset):
         ) = self.preprocess(item["emotion_context"])
 
         # strategy
-        item["strategy"], item["strategy_label"] = self.preprocess_strategy(
-            self.data["strategy_label"][index], self.strategy_map
+        if "strategy_label" in self.data.keys():
+            item["strategy"], item["strategy_label"] = self.preprocess_strategy(
+                self.data["strategy_label"][index], self.strategy_map
         )
 
         item["cs_text"] = self.data["utt_cs"][index]
@@ -628,8 +640,9 @@ def collate_fn(data):
     d["program_label"] = item_info["emotion_label"]
 
     ##strategy
-    d["strategy"] = item_info["strategy"]
-    d["strategy_label"] = item_info["strategy_label"]
+    if "strategy_label" in item_info.keys():
+        d["strategy"] = item_info["strategy"]
+        d["strategy_label"] = item_info["strategy_label"]
 
     ##text
     d["input_txt"] = item_info["context_text"]
