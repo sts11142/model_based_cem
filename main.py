@@ -202,5 +202,5 @@ def main():
 
 
 if __name__ == "__main__":
-    print("now is strategy_20221223")
+    print("now is cem_strategy_ed/20221223")
     main()
